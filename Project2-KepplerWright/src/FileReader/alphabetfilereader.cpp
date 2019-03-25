@@ -11,4 +11,5 @@ AlphabetFileReader::AlphabetFileReader(fstream * infile) : FileReader(infile)
     smallAlphabet.push_back(rawAlphabet.at(i));
   }
   Alphabet::createAlphabet(smallAlphabet);
+  doneReading();
 }

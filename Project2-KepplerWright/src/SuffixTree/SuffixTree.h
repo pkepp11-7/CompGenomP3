@@ -15,12 +15,14 @@ unsigned int lastInternalId;
 
 //******private methods***********
 
+//TODO: Write findPath
 //findPath navigates the (sub)tree from the starting node parameter. Returns the created leaf node that was inserted
 SuffixTreeNode * findPath(SuffixTreeNode * start, char * suffix);
 
 //slInsert handles the 4 cases for inserting a suffix using suffix links. Ultimately calls findPath.
 SuffixTreeNode * slInsert(SuffixTreeNode * last, char * suffix);
 
+//TODO: Write nodeHop
 //helper function for the node hop operation. Called by slInsert.
 //Either locates the correct node (v) that already exists, or creates it.
 //Returns the node v
@@ -47,7 +49,7 @@ bool basicInsert(char * str, unsigned int length);
 //returns true if all suffixes inserted successfully
 bool McCreightInsert(char * str, unsigned int length);
 
-
+//Depth-first search. Used for gathering data and constructing the BWT
 void DFS();
 
 };

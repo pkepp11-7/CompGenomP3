@@ -1,18 +1,21 @@
 //Patrick Keppler and Connor Wright, 2019
 #include "FileReader/fastafilereader.h"
+#include "FileReader/AlphabetFileReader.h"
 #include "SuffixTree/SuffixTree.h"
 
 int main(int argc, char * argv[])
 {
   int testMode, length;
   char * cString;
-  fstream fastaFile;
+  fstream fastaFile, alphabetFile;
   SuffixTree suffixTree;
   FastaFileReader fastaReader;
+  AlphabetFileReader alphabetReader;
   string fastaString;
   assert(argc >= 3);
 
   fastaFile.open(argv[1], fstream::in);
+  alphabetFile.open(argv[2], fstream::in);
   testMode = 0;
 
   if(argc > 3)
@@ -20,9 +23,11 @@ int main(int argc, char * argv[])
     testMode = atoi(argv[4]);
   }
 
-  if(fastaFile.is_open())
+  if(fastaFile.is_open() && alphabetFile.is_open())
   {
+
       fastaReader = FastaFileReader(&fastaFile);
+      alphabetReader = AlphabetFileReader(&alphabetFile);
       fastaString = fastaReader.getSequenceByIndex(0).name;
       //add the $ to the end of the input string
       fastaString.append("$");

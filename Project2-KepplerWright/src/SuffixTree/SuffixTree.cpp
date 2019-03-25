@@ -165,7 +165,6 @@ bool SuffixTree::McCreightInsert(char * str, unsigned int length)
 }
 
 //Depth-first search. Used for gathering data and constructing the BWT
-
 void SuffixTree::DFS()
 {
   //Calls recursive form of DFS
