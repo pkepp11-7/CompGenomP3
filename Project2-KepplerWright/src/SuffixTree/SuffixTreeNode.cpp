@@ -296,8 +296,7 @@ SuffixTreeNode * SuffixTreeNode::removeChild(SuffixTreeNode * childToRemove)
   }
 }
 
-
-SuffixTreeNode * SuffixTreeNode::addInternalNode(char firstLabel, int indexBreak)
+SuffixTreeNode * SuffixTreeNode::addInternalNode(char firstLabel, int indexBreak, int id)
 {
   SuffixTreeNode * childAlongEdge = getChild(firstLabel);
   assert(childAlongEdge != nullptr);
@@ -308,7 +307,7 @@ SuffixTreeNode * SuffixTreeNode::addInternalNode(char firstLabel, int indexBreak
 
   //convert label to string for easy conversion
   string * oldLabelString = new string(childAlongEdge->getLabel());
-  string * newInternalNodeLabelString = new string(oldLabelString->substr(0, indexBreak));
+  string * newInternalNodeLabelString = new string(oldLabelString->substr(id, indexBreak));
   string * childAlongEdgeLabelString = new string(indexBreak, oldLabelString->length());
 
   char * newInternalNodeLabel = copyNewLabel(newInternalNodeLabelString);
