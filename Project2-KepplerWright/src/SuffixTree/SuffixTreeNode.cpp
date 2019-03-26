@@ -181,6 +181,7 @@ SuffixTreeNode * SuffixTreeNode::addChild(SuffixTreeNode * newChild)
 }
 
 //inserts a sibling in lexographic order
+//called within parent node
 SuffixTreeNode * SuffixTreeNode::addSibling(SuffixTreeNode * newSibling,
                                             SuffixTreeNode * firstSibling)
 {
@@ -195,9 +196,9 @@ SuffixTreeNode * SuffixTreeNode::addSibling(SuffixTreeNode * newSibling,
 
   while(!inserted)
   {
-    ordering = Alphabet::compare(firstSibling->getLabel()[0], currentSibling->getLabel()[0]);
+    ordering = Alphabet::compare(newSibling->getLabel()[0], currentSibling->getLabel()[0]);
     //we should not be inserting the same characters
-    assert(ordering == 0);
+    assert(ordering != 0);
     
     if(ordering > 0)
     {
@@ -312,6 +313,11 @@ SuffixTreeNode * SuffixTreeNode::addInternalNode(char firstLabel, int indexBreak
 
   char * newInternalNodeLabel = copyNewLabel(newInternalNodeLabelString);
   char * childAlongEdgeLabel = copyNewLabel(childAlongEdgeLabelString); 
+  
+  //free memory
+  delete oldLabelString;
+  delete newInternalNodeLabelString;
+  delete childAlongEdgeLabelString;
 
   //edge is now broken
   childAlongEdge->setLabel(childAlongEdgeLabel);
