@@ -92,7 +92,7 @@ void SuffixTree::DFS(SuffixTreeNode * currentNode)
 {
   if(currentNode != nullptr)
   {
-    DFS(currentNode->getChild());
+    DFS(currentNode->getChildPointer());
     DFS(currentNode->getSibling());
     //if current node is an internal node
     if(currentNode->getId() > lastInserted->getId())
