@@ -312,7 +312,7 @@ SuffixTreeNode * SuffixTreeNode::addInternalNode(char firstLabel, int indexBreak
 
   char * newInternalNodeLabel = copyNewLabel(newInternalNodeLabelString);
   char * childAlongEdgeLabel = copyNewLabel(childAlongEdgeLabelString); 
-  
+
   //free memory
   delete oldLabelString;
   delete newInternalNodeLabelString;
@@ -330,6 +330,38 @@ SuffixTreeNode * SuffixTreeNode::addInternalNode(char firstLabel, int indexBreak
   //old child added
   newInternalNode->addChild(childAlongEdge);
 
+  printf("~~~~~~~~~~~~~~~~~~~~~Debug information for addInternal node after insertion~~~~~~~~~~~~~~~~~~~~~\n");
+  printInformation("parent");
+  newInternalNode->printInformation("newInternalNode");
+  childAlongEdge->printInformation("childAlongEdge");
+  printf("~~~~~~~~~~~~~~~~~~~End Debug information for addInternal node after insertion~~~~~~~~~~~~~~~~~~~\n\n");
 
   return newInternalNode;
+}
+
+void SuffixTreeNode::printInformation(const char* name)
+{
+  if(name != nullptr && strlen(name) > 0)
+  {
+    printf("Node: %d (%s)\n", this, name);
+  }
+  else
+  {
+    printf("Node: %d\n", this);
+  }
+
+  printf("\tdepth: %d\n", depth);
+  if(label != nullptr)
+  {
+    printf("\tlabel: %s\n", label);
+  }
+  else
+  {
+    printf("\tlabel: NULLPTR\n");
+  }
+  printf("\tid: %d\n", id);
+  printf("\tparent: %d\n", parent);
+  printf("\tchildrenptr: %d\n", childrenPointer);
+  printf("\tsiblingptr: %d\n", sibling);
+  printf("\tSL: %d\n\n", sl);
 }

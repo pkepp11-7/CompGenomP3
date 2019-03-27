@@ -74,8 +74,8 @@ SuffixTreeNode * removeChild(SuffixTreeNode * childToRemove);
 //firstLable: char of the label we will break
 //indexBreak: index where the break will occure
 SuffixTreeNode * addInternalNode(char firstLabel, int indexBreak, int id);
-
-//TODO: write additional accessors/API methods as needed.
+//debugging tool used to print the information of a node
+void printInformation(const char* name);
 
 };
 
