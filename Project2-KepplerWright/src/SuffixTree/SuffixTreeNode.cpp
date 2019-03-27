@@ -198,9 +198,9 @@ SuffixTreeNode * SuffixTreeNode::addSibling(SuffixTreeNode * newSibling,
   {
     ordering = Alphabet::compare(newSibling->getLabel()[0], currentSibling->getLabel()[0]);
     //we should not be inserting the same characters
-    assert(ordering != 0);
+    assert(ordering != 0 || newSibling->getLabel()[0] != '$');
     
-    if(ordering > 0)
+    if(ordering < 0)
     {
       //we insert before
       newSibling->setSibling(currentSibling);
