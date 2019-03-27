@@ -49,6 +49,7 @@ int Alphabet::compare(char * s1, char * s2)
     {
       return cmp;
     }
+    i++;
   }
   if(s1[i] != 0)
   {
