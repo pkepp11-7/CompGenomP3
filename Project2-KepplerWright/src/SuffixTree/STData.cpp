@@ -100,11 +100,11 @@ void STData::startTimer()
 
 void STData::stopTimer()
 {
-  if(stopTime == nullptr)
+  if(endTime == nullptr)
   {
-    stopTime = new struct timeval();
+    endTime = new struct timeval();
   }
-  gettimeofday(stopTime, NULL);
+  gettimeofday(endTime, NULL);
 }
 
 //print the bwt 1 character to a line
@@ -129,8 +129,8 @@ void STData::printData()
 void STData::printElapsedTime()
 {
   //elapsed time in milliseconds
-  assert(startTime != nullptr && stopTime != nullptr);
-  unsigned int elapsedTimeMs = (stopTime->tv_sec - startTime->tv_sec) * 1000 + (stopTime->tv_usec - stopTime->tv_usec) / 1000;
+  assert(startTime != nullptr && endTime != nullptr);
+  unsigned int elapsedTimeMs = (endTime->tv_sec - startTime->tv_sec) * 1000 + (endTime->tv_usec - endTime->tv_usec) / 1000;
   cout << "ST construction time: " << elapsedTimeMs << "ms\n";
 
 }
