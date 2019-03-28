@@ -20,7 +20,7 @@ int main(int argc, char * argv[])
 
   if(argc > 3)
   {
-    testMode = atoi(argv[4]);
+    testMode = atoi(argv[3]);
   }
 
   if(fastaFile.is_open() && alphabetFile.is_open())

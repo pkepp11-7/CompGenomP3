@@ -15,7 +15,7 @@ string STData::constructLongestRepeat(SuffixTreeNode * currentNode)
   {
     return "";
   }
-  else return constructLongestRepeat(currentNode->getParentPtr()) + currentNode->getLabel();
+  else return constructLongestRepeat(currentNode->getParent()) + currentNode->getLabel();
 }
 
 //*******public methods*************
