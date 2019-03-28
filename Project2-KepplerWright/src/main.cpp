@@ -1,6 +1,6 @@
 //Patrick Keppler and Connor Wright, 2019
 #include "FileReader/fastafilereader.h"
-#include "FileReader/AlphabetFileReader.h"
+#include "FileReader/alphabetfilereader.h"
 #include "SuffixTree/SuffixTree.h"
 
 int main(int argc, char * argv[])
