@@ -157,7 +157,38 @@ SuffixTreeNode * SuffixTree::slInsert(SuffixTreeNode * last, char * suffix)
 //Returns the node v
 SuffixTreeNode * SuffixTree::nodeHop(SuffixTreeNode * start, char * beta)
 {
+  size_t betaIndex = 0;
+  unsigned int startDepth = start->getDepth();
 
+  SuffixTreeNode * current = start;
+  SuffixTreeNode * child = nullptr;
+
+  while(true)
+  {
+    child = current->getChild(beta[betaIndex]);
+    assert(child != nullptr);
+
+    if(strlen(beta) + startDepth < child->getDepth())
+    {
+      //we overshot and need to add an internal node
+      SuffixTreeNode * newInternalNode 
+        = current->addInternalNode(child->getLabel()[0],
+                                   strlen(beta) - current->getDepth(), 
+                                   ++lastInternalId);
+      STData::incrementInternalNodes();
+      return newInternalNode;
+    }
+    else if(strlen(beta) + startDepth == child->getDepth())
+    {
+      //we have found our lost child V!
+      return child;
+    }
+    else
+    {
+      //we need to keep go deeper
+      betaIndex = child->getDepth() - startDepth;
+    }
+  }
 }
 
 
