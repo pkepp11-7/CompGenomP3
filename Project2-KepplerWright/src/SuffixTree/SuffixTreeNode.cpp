@@ -343,11 +343,11 @@ void SuffixTreeNode::printInformation(const char* name)
 {
   if(name != nullptr && strlen(name) > 0)
   {
-    printf("Node: %d (%s)\n", this, name);
+    printf("Node: %p (%s)\n", this, name);
   }
   else
   {
-    printf("Node: %d\n", this);
+    printf("Node: %p\n", this);
   }
 
   printf("\tdepth: %d\n", depth);
@@ -360,8 +360,8 @@ void SuffixTreeNode::printInformation(const char* name)
     printf("\tlabel: NULLPTR\n");
   }
   printf("\tid: %d\n", id);
-  printf("\tparent: %d\n", parent);
-  printf("\tchildrenptr: %d\n", childrenPointer);
-  printf("\tsiblingptr: %d\n", sibling);
-  printf("\tSL: %d\n\n", sl);
+  printf("\tparent: %p\n", parent);
+  printf("\tchildrenptr: %p\n", childrenPointer);
+  printf("\tsiblingptr: %p\n", sibling);
+  printf("\tSL: %p\n\n", sl);
 }

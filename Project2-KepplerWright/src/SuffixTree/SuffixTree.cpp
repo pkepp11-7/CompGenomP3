@@ -10,6 +10,79 @@
 SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, char * suffix)
 {
 
+  SuffixTreeNode * child = nullptr;
+  SuffixTreeNode * current = start;
+  size_t labelIndex = 0;
+  size_t suffixIndex = 0;
+  unsigned int id = lastInserted->getId() + 1;
+
+  while(suffixIndex < strlen(suffix))
+  {
+    child = current->getChild(suffix[suffixIndex]);
+
+    if(child == nullptr)
+    {
+      //could not find child add a new branch
+      char * newLabel = new char[strlen(suffix) - suffixIndex + 1];
+      newLabel = strcpy(newLabel, &suffix[suffixIndex]);
+      SuffixTreeNode * newLeaf = new SuffixTreeNode(id, newLabel, nullptr);
+      current->addChild(newLeaf);
+      STData::incrementLeafNodes();
+
+      return newLeaf;
+    }
+    else
+    {
+      //found child need to walk down
+      labelIndex = 0;
+      int comparison = 0;
+      char * childLabel = child->getLabel();
+
+      while(labelIndex < strlen(childLabel) && suffixIndex < strlen(suffix))
+      {
+        comparison = Alphabet::compare(suffix[suffixIndex], childLabel[labelIndex]);
+        
+        if(comparison != 0)
+        {
+          //path no longer matches
+
+          //add new internal node
+          SuffixTreeNode * newInternalNode =
+           current->addInternalNode(childLabel[0], labelIndex, ++lastInternalId);
+          STData::incrementInternalNodes();
+
+          //add new leaf to the end of new internal node
+          char * newLabel = new char[strlen(suffix) - suffixIndex + 1];
+          newLabel = strcpy(newLabel, &suffix[suffixIndex]);
+          SuffixTreeNode * newLeafNode = new SuffixTreeNode(id, newLabel, nullptr);
+
+          newInternalNode->addChild(newLeafNode);
+          STData::incrementLeafNodes();
+
+          return newLeafNode;
+        }
+
+        labelIndex++;
+        suffixIndex++;
+      }
+
+      if(suffixIndex < strlen(suffix))
+      {
+        //we have reached the end of the suffix
+        //add a new internal node and leaf with label $
+        
+        SuffixTreeNode * newInternalNode =
+          current->addInternalNode(childLabel[0], labelIndex, ++lastInternalId);
+        STData::incrementInternalNodes();
+
+        SuffixTreeNode * newLeafNode = new SuffixTreeNode(id, "$", nullptr);
+        newInternalNode->addChild(newLeafNode);
+        STData::incrementLeafNodes();
+
+        return newLeafNode;
+      }
+    }
+  }
 }
 
 //slInsert handles the 4 cases for inserting a suffix using suffix links. Ultimately calls findPath.
