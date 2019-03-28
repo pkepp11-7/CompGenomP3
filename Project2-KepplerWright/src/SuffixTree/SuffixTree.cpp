@@ -202,6 +202,7 @@ void SuffixTree::DFS(SuffixTreeNode * currentNode)
     if(currentNode->getId() > lastInserted->getId())
     {
       STData::incrementInternalNodes();
+      STData::findLongestRepeat(currentNode);
     }
     else {
       STData::incrementLeafNodes();

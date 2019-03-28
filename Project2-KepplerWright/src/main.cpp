@@ -20,7 +20,7 @@ int main(int argc, char * argv[])
 
   if(argc > 3)
   {
-    testMode = atoi(argv[4]);
+    testMode = atoi(argv[3]);
   }
 
   if(fastaFile.is_open() && alphabetFile.is_open())
@@ -39,6 +39,7 @@ int main(int argc, char * argv[])
       //create a suffix tree
       suffixTree = SuffixTree();
       //TODO:replace with McCreight when ready
+      STData::startTimer();
       suffixTree.basicInsert(cString, length);
       //1's place is 1: do dfs
       if(testMode & 1 == 1)
@@ -55,9 +56,22 @@ int main(int argc, char * argv[])
         {
           STData::printData();
         }
-        //done, delete BWT
-        STData::done();
+
+        if(testMode & 16 == 16)
+        {
+          STData::printLongestRepeat();
+        }
       }
+      if(testMode & 8 == 8)
+      {
+        STData::printElapsedTime();
+      }
+      if(testMode & 32 == 32)
+      {
+        system("pause");
+      }
+      //done, delete BWT
+      STData::done();
 
   }
 

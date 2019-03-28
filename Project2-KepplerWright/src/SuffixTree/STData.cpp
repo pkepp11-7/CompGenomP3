@@ -4,8 +4,23 @@
 //set default static variable values
 unsigned int STData::internalNodes = 0, STData::leafNodes = 0, STData::len = 0, STData::position = 0;
 char * STData::bwt = nullptr, * STData::inputStr = nullptr;
+struct timeval * STData::startTime = nullptr, * STData::endTime = nullptr;
+SuffixTreeNode * STData::deepestInternal = nullptr;
 
 
+//******private methods***********
+string STData::constructLongestRepeat(SuffixTreeNode * currentNode)
+{
+  if(currentNode->getId() == 0)
+  {
+    return "";
+  }
+  else return constructLongestRepeat(currentNode->getParent()) + currentNode->getLabel();
+}
+
+//*******public methods*************
+
+//initialize the static class
 void STData::init(char * str, const unsigned int & length)
 {
   len = length;
@@ -21,11 +36,26 @@ void STData::init(char * str, const unsigned int & length)
   bwt = new char[length];
 }
 
+//destroy the dynamically-sized bwt table, as well as timers if used
 void STData::done()
 {
-  delete[] bwt;
-  bwt = nullptr;
+  if(bwt != nullptr)
+  {
+    delete[] bwt;
+    bwt = nullptr;
+  }
+  if(startTime != nullptr)
+   {
+    delete startTime;
+  }
+  if(endTime != nullptr)
+  {
+    delete endTime;
+  }
+
+  startTime = endTime = nullptr;
 }
+
 
 //increments the internal node counter
 void STData::incrementInternalNodes()
@@ -39,6 +69,16 @@ void STData::incrementLeafNodes()
   leafNodes++;
 }
 
+void STData::findLongestRepeat(SuffixTreeNode * inNode)
+{
+  //if no deepest internal node || deepest internal node is shallower than input node
+  if(deepestInternal == nullptr || deepestInternal->getDepth() < inNode->getDepth())
+  {
+    deepestInternal = inNode;
+  }
+}
+
+
 void STData::pushBwt(unsigned int index)
 {
   if(index == 0)
@@ -47,6 +87,24 @@ void STData::pushBwt(unsigned int index)
   }
   bwt[position] = inputStr[index - 1];
   position++;
+}
+
+void STData::startTimer()
+{
+  if(startTime == nullptr)
+  {
+    startTime = new struct timeval();
+  }
+  gettimeofday(startTime, NULL);
+}
+
+void STData::stopTimer()
+{
+  if(endTime == nullptr)
+  {
+    endTime = new struct timeval();
+  }
+  gettimeofday(endTime, NULL);
 }
 
 //print the bwt 1 character to a line
@@ -59,9 +117,31 @@ void STData::printBwt()
   }
 }
 
+//print non-bwt data
 void STData::printData()
 {
   cout << "Internal nodes: " << internalNodes;
   cout << "\nLeaf nodes: " << leafNodes;
   cout << "\n";
+}
+
+//print time elapsed between startTimer and stopTimer calls
+void STData::printElapsedTime()
+{
+  //elapsed time in milliseconds
+  assert(startTime != nullptr && endTime != nullptr);
+  unsigned int elapsedTimeMs = (endTime->tv_sec - startTime->tv_sec) * 1000 + (endTime->tv_usec - endTime->tv_usec) / 1000;
+  cout << "ST construction time: " << elapsedTimeMs << "ms\n";
+
+}
+
+//print the longest repeating substring, based on the deepest internal node
+void STData::printLongestRepeat()
+{
+  string longestRepeat;
+  if(deepestInternal != nullptr)
+  {
+    longestRepeat = constructLongestRepeat(deepestInternal);
+  }
+  cout << "Longest Repeating segment: " << longestRepeat << '\n';
 }
