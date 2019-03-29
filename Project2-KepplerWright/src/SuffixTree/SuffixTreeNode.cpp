@@ -19,11 +19,10 @@ SuffixTreeNode::SuffixTreeNode()
 
 //constructor with arguments. Requires an id, label string, and a pointer to the parent.
 //Optional child and sibling pointers, default to null if not provided. Depth in tree can be passed in, or computed by default.
-SuffixTreeNode::SuffixTreeNode(const int & newId, char * labelStr, SuffixTreeNode * parentPtr, SuffixTreeNode * childPtr , SuffixTreeNode * siblingPtr, const int & treeDepth)
+SuffixTreeNode::SuffixTreeNode(const int & newId, const string & labelStr, SuffixTreeNode * parentPtr, SuffixTreeNode * childPtr , SuffixTreeNode * siblingPtr, const int & treeDepth)
 {
   id = newId;
-  label = new char[sizeof(labelStr) + 1];
-  strcpy(label, labelStr);
+  label = labelStr;
   parent = parentPtr;
   childrenPointer = childPtr;
   sibling = siblingPtr;
@@ -105,7 +104,7 @@ SuffixTreeNode * SuffixTreeNode::getSL()
   return sl;
 }
 
-char * SuffixTreeNode::getLabel() {
+string SuffixTreeNode::getLabel() {
   return label;
 }
 
@@ -127,7 +126,7 @@ void SuffixTreeNode::setChildrenPointer(SuffixTreeNode * newChildPointer)
 void SuffixTreeNode::calculateDepth()
 {
   assert(parent != nullptr);
-  depth = parent->getDepth() + strlen(label);
+  depth = parent->getDepth() + label.size();
   //propagate changes throgh tree
   if(sibling != nullptr)
   {
@@ -144,7 +143,7 @@ void SuffixTreeNode::setDepth(int newDepth)
   depth = newDepth;
 }
 
-void SuffixTreeNode::setLabel(char * newLabel)
+void SuffixTreeNode::setLabel(const string & newLabel)
 {
   label = newLabel;
 }
@@ -160,7 +159,7 @@ void SuffixTreeNode::setSL(SuffixTreeNode * v)
 SuffixTreeNode * SuffixTreeNode::addChild(SuffixTreeNode * newChild)
 {
   //check the child is valid
-  assert(newChild->getLabel() != nullptr);
+  assert(newChild->getLabel() != "");
 
   //check if the parent has a child already
   if(childrenPointer == nullptr)
@@ -239,15 +238,6 @@ SuffixTreeNode * SuffixTreeNode::addSibling(SuffixTreeNode * newSibling,
   return newSibling;
 }
 
-char * SuffixTreeNode::copyNewLabel(string * stringLabel)
-{
-  const char * constCstrLabel = stringLabel->c_str();
-  char * cstrLabel = new char[stringLabel->length() + 1];
-  strcpy(cstrLabel, constCstrLabel);
-
-  return cstrLabel;
-}
-
 //removes a child and returns it
 SuffixTreeNode * SuffixTreeNode::removeChild(SuffixTreeNode * childToRemove)
 {
@@ -305,63 +295,23 @@ SuffixTreeNode * SuffixTreeNode::addInternalNode(char firstLabel, int indexBreak
   assert(childAlongEdge != nullptr);
 
   //convert label to string for easy conversion
-  string * oldLabelString = new string(childAlongEdge->getLabel());
-  string *  childAlongEdgeLabelString = new string(oldLabelString->substr(indexBreak));
-  string *  newInternalNodeLabelString= new string(oldLabelString->substr(0, indexBreak));
+  string oldLabelString = string(childAlongEdge->getLabel());
+  string childAlongEdgeLabelString = string(oldLabelString.substr(indexBreak));
+  string newInternalNodeLabelString= string(oldLabelString.substr(0, indexBreak));
 
-
-  char * childAlongEdgeLabel = copyNewLabel(childAlongEdgeLabelString); 
-  char * newInternalNodeLabel = copyNewLabel(newInternalNodeLabelString);
-
-  //free memory
-  delete oldLabelString;
-  delete newInternalNodeLabelString;
-  delete childAlongEdgeLabelString;
+  //save memory
+  oldLabelString = "";
 
   //edge is now broken
-  childAlongEdge->setLabel(childAlongEdgeLabel);
+  childAlongEdge->setLabel(childAlongEdgeLabelString);
   
   //create new internal node
-  SuffixTreeNode * newInternalNode = new SuffixTreeNode(id, newInternalNodeLabel, nullptr);
+  SuffixTreeNode * newInternalNode = new SuffixTreeNode(id, newInternalNodeLabelString, nullptr);
   
   //new internal node added
   addChild(newInternalNode);
   //old child added
   newInternalNode->addChild(childAlongEdge);
 
-/*
-  printf("~~~~~~~~~~~~~~~~~~~~~Debug information for addInternal node after insertion~~~~~~~~~~~~~~~~~~~~~\n");
-  printInformation("parent");
-  newInternalNode->printInformation("newInternalNode");
-  childAlongEdge->printInformation("childAlongEdge");
-  printf("~~~~~~~~~~~~~~~~~~~End Debug information for addInternal node after insertion~~~~~~~~~~~~~~~~~~~\n\n");
-*/
   return newInternalNode;
-}
-
-void SuffixTreeNode::printInformation(const char* name)
-{
-  if(name != nullptr && strlen(name) > 0)
-  {
-    printf("Node: %p (%s)\n", this, name);
-  }
-  else
-  {
-    printf("Node: %p\n", this);
-  }
-
-  printf("\tdepth: %d\n", depth);
-  if(label != nullptr)
-  {
-    printf("\tlabel: %s\n", label);
-  }
-  else
-  {
-    printf("\tlabel: NULLPTR\n");
-  }
-  printf("\tid: %d\n", id);
-  printf("\tparent: %p\n", parent);
-  printf("\tchildrenptr: %p\n", childrenPointer);
-  printf("\tsiblingptr: %p\n", sibling);
-  printf("\tSL: %p\n\n", sl);
 }

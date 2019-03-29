@@ -15,7 +15,7 @@ private:
 //***********data*****************
 unsigned int id, depth;
 SuffixTreeNode * childrenPointer, * sibling, * parent, * sl;
-char * label;
+string label;
 
 
 //******private methods***********
@@ -24,12 +24,6 @@ char * label;
 SuffixTreeNode * 
     addSibling(SuffixTreeNode * newSibling, 
                SuffixTreeNode * firstSibling);
-
-//creates a new cstring copy of the string label
-char * copyNewLabel(string * stringLabel);
-//TODO: Write any internal helper methods here.
-//      Will be called by public methods and constructors.
-
 public:
 
 //********constructors*************
@@ -39,7 +33,7 @@ SuffixTreeNode();
 
 //constructor with arguments. Requires an id, label string, and a pointer to the parent.
 //Optional child and sibling pointers, default to null if not provided. Depth in tree can be passed in, or computed by default.
-SuffixTreeNode(const int & newId, char * labelStr, SuffixTreeNode * parentPtr, SuffixTreeNode * childPtr = nullptr, SuffixTreeNode * siblingPtr = nullptr, const int & treeDepth = 0);
+SuffixTreeNode(const int & newId, const string & labelStr, SuffixTreeNode * parentPtr, SuffixTreeNode * childPtr = nullptr, SuffixTreeNode * siblingPtr = nullptr, const int & treeDepth = 0);
 
 
 //*******public methods*************
@@ -52,7 +46,7 @@ SuffixTreeNode * getChildPointer();
 SuffixTreeNode * getChild(char firstLabel);
 SuffixTreeNode * getSibling();
 SuffixTreeNode * getSL();
-char * getLabel();
+string getLabel();
 
 void setSibling(SuffixTreeNode * newSibling);
 void setParent(SuffixTreeNode * newParent);
@@ -61,7 +55,7 @@ void setChildrenPointer(SuffixTreeNode * newChildPointer);
 //also tells children and siblings to recalculate depth
 void calculateDepth();
 void setDepth(int newDepth);
-void setLabel(char * newLabel);
+void setLabel(const string & newLabel);
 
 //mutators
 void setSL(SuffixTreeNode * v);
@@ -74,8 +68,6 @@ SuffixTreeNode * removeChild(SuffixTreeNode * childToRemove);
 //firstLable: char of the label we will break
 //indexBreak: index where the break will occure
 SuffixTreeNode * addInternalNode(char firstLabel, int indexBreak, int id);
-//debugging tool used to print the information of a node
-void printInformation(const char* name);
 
 };
 
