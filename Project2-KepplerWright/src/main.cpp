@@ -42,31 +42,31 @@ int main(int argc, char * argv[])
       STData::startTimer();
       suffixTree.basicInsert(cString, length);
       //1's place is 1: do dfs
-      if(testMode & 1 == 1)
+      if((testMode & 1) == 1)
       {
         STData::init(cString, length);
         suffixTree.DFS();
         //2's place is 1: print bwt
-        if(testMode & 2 == 2)
+        if((testMode & 2) == 2)
         {
           STData::printBwt();
         }
         //4's place is 1: print other data
-        if(testMode & 4 == 4)
+        if((testMode & 4) == 4)
         {
           STData::printData();
         }
 
-        if(testMode & 16 == 16)
+        if((testMode & 16) == 16)
         {
           STData::printLongestRepeat();
         }
       }
-      if(testMode & 8 == 8)
+      if((testMode & 8) == 8)
       {
         STData::printElapsedTime();
       }
-      if(testMode & 32 == 32)
+      if((testMode & 32) == 32)
       {
         system("pause");
       }

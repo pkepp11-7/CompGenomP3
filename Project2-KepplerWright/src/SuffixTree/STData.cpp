@@ -81,11 +81,11 @@ void STData::findLongestRepeat(SuffixTreeNode * inNode)
 
 void STData::pushBwt(unsigned int index)
 {
-  if(index == 0)
+  if(index == 1)
   {
-    index = len;
+    index = len + 1;
   }
-  bwt[position] = inputStr[index - 1];
+  bwt[position] = inputStr[index - 2];
   position++;
 }
 

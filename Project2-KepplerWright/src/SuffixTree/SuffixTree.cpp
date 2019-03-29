@@ -41,7 +41,7 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, char * suffix)
       while(labelIndex < strlen(childLabel) && suffixIndex < strlen(suffix))
       {
         comparison = Alphabet::compare(suffix[suffixIndex], childLabel[labelIndex]);
-        
+
         if(comparison != 0)
         {
           //path no longer matches
@@ -70,7 +70,7 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, char * suffix)
       {
         //we have reached the end of the suffix
         //add a new internal node and leaf with label $
-        
+
         SuffixTreeNode * newInternalNode =
           current->addInternalNode(childLabel[0], labelIndex, ++lastInternalId);
         STData::incrementInternalNodes();
@@ -172,9 +172,9 @@ SuffixTreeNode * SuffixTree::nodeHop(SuffixTreeNode * start, char * beta)
     if(strlen(beta) + startDepth < child->getDepth())
     {
       //we overshot and need to add an internal node
-      SuffixTreeNode * newInternalNode 
+      SuffixTreeNode * newInternalNode
         = current->addInternalNode(child->getLabel()[0],
-                                   strlen(beta) - current->getDepth(), 
+                                   strlen(beta) - current->getDepth(),
                                    ++lastInternalId);
       STData::incrementInternalNodes();
       return newInternalNode;
@@ -198,9 +198,8 @@ void SuffixTree::DFS(SuffixTreeNode * currentNode)
   if(currentNode != nullptr)
   {
     DFS(currentNode->getChildPointer());
-    DFS(currentNode->getSibling());
     //if current node is an internal node
-    if(currentNode->getId() > lastInserted->getId())
+    if(currentNode->getId() > lastInserted->getId() || currentNode->getId() == 0)
     {
       STData::incrementInternalNodes();
       STData::findLongestRepeat(currentNode);
@@ -209,6 +208,8 @@ void SuffixTree::DFS(SuffixTreeNode * currentNode)
       STData::incrementLeafNodes();
       STData::pushBwt(currentNode->getId());
     }
+    DFS(currentNode->getSibling());
+    
   }
 }
 
