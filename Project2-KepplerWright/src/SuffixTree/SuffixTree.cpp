@@ -12,18 +12,19 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, char * suffix)
 
   SuffixTreeNode * child = nullptr;
   SuffixTreeNode * current = start;
+  size_t suffixLen = strlen(suffix);
   size_t labelIndex = 0;
   size_t suffixIndex = 0;
   unsigned int id = lastInserted->getId() + 1;
 
-  while(suffixIndex < strlen(suffix))
+  while(suffixIndex < suffixLen)
   {
     child = current->getChild(suffix[suffixIndex]);
 
     if(child == nullptr)
     {
       //could not find child add a new branch
-      char * newLabel = new char[strlen(suffix) - suffixIndex + 1];
+      char * newLabel = new char[suffixLen - suffixIndex + 1];
       newLabel = strcpy(newLabel, &suffix[suffixIndex]);
       SuffixTreeNode * newLeaf = new SuffixTreeNode(id, newLabel, nullptr);
       current->addChild(newLeaf);
@@ -38,7 +39,7 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, char * suffix)
       int comparison = 0;
       char * childLabel = child->getLabel();
 
-      while(labelIndex < strlen(childLabel) && suffixIndex < strlen(suffix))
+      while(labelIndex < suffixLen && suffixIndex < suffixLen)
       {
         comparison = Alphabet::compare(suffix[suffixIndex], childLabel[labelIndex]);
 
@@ -52,7 +53,7 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, char * suffix)
           STData::incrementInternalNodes();
 
           //add new leaf to the end of new internal node
-          char * newLabel = new char[strlen(suffix) - suffixIndex + 1];
+          char * newLabel = new char[suffixLen - suffixIndex + 1];
           newLabel = strcpy(newLabel, &suffix[suffixIndex]);
           SuffixTreeNode * newLeafNode = new SuffixTreeNode(id, newLabel, nullptr);
 
@@ -66,7 +67,7 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, char * suffix)
         suffixIndex++;
       }
 
-      if(suffixIndex > strlen(suffix))
+      if(suffixIndex > suffixLen)
       {
         //we have reached the end of the suffix
         //add a new internal node and leaf with label $
@@ -141,7 +142,14 @@ SuffixTreeNode * SuffixTree::slInsert(SuffixTreeNode * last, char * suffix)
     //case B: u' is root
     else {
       //node hop from root to get v
-      v = nodeHop(uPrime, beta);
+      if(beta[1])
+      {
+        v = nodeHop(uPrime, beta + 1);
+      }
+      else
+      {
+        v = root;
+      }
       //assert nodeHop was successful
       assert (v != nullptr);
       //set suffix link of u to v
@@ -160,6 +168,7 @@ SuffixTreeNode * SuffixTree::nodeHop(SuffixTreeNode * start, char * beta)
 {
   size_t betaIndex = 0;
   unsigned int startDepth = start->getDepth();
+  unsigned int betaLen = strlen(beta);
 
   SuffixTreeNode * current = start;
   SuffixTreeNode * child = nullptr;
@@ -169,17 +178,17 @@ SuffixTreeNode * SuffixTree::nodeHop(SuffixTreeNode * start, char * beta)
     child = current->getChild(beta[betaIndex]);
     assert(child != nullptr);
 
-    if(strlen(beta) + startDepth < child->getDepth())
+    if(betaLen + startDepth < child->getDepth())
     {
       //we overshot and need to add an internal node
       SuffixTreeNode * newInternalNode
         = current->addInternalNode(child->getLabel()[0],
-                                   strlen(beta) - current->getDepth(),
+                                   betaLen - current->getDepth(),
                                    ++lastInternalId);
       STData::incrementInternalNodes();
       return newInternalNode;
     }
-    else if(strlen(beta) + startDepth == child->getDepth())
+    else if(betaLen + startDepth == child->getDepth())
     {
       //we have found our lost child V!
       return child;
@@ -209,7 +218,7 @@ void SuffixTree::DFS(SuffixTreeNode * currentNode)
       STData::pushBwt(currentNode->getId());
     }
     DFS(currentNode->getSibling());
-    
+
   }
 }
 
