@@ -7,7 +7,7 @@
 
 //findPath navigates the (sub)tree from the starting node parameter. Returns the created leaf node that was inserted
 //called by basicInsert or slInsert
-SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, const string string & suffix)
+SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, const string & suffix)
 {
 
   SuffixTreeNode * child = nullptr;
@@ -40,7 +40,7 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, const string strin
       int comparison = 0;
       string childLabel = child->getLabel();
 
-      while(labelIndex < suffixLen && suffixIndex < suffix.length())
+      while(labelIndex < suffix.length() && suffixIndex < suffix.length())
       {
         comparison = Alphabet::compare(suffix[suffixIndex], childLabel[labelIndex]);
 
@@ -90,7 +90,7 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, const string strin
 }
 
 //slInsert handles the 4 cases for inserting a suffix using suffix links. Ultimately calls findPath.
-SuffixTreeNode * SuffixTree::slInsert(SuffixTreeNode * last, string suffix)
+SuffixTreeNode * SuffixTree::slInsert(SuffixTreeNode * last, const string & suffix)
 {
   SuffixTreeNode * u, * v, * uPrime, * vPrime;
   string beta;
@@ -139,12 +139,12 @@ SuffixTreeNode * SuffixTree::slInsert(SuffixTreeNode * last, string suffix)
       assert(v != nullptr);
       //set suffix link of u to v
       u->setSL(v);
-      return findPath(v,  suffix + v->getDepth());
+      return findPath(v,  suffix.substr(v->getDepth()));
     }
     //case B: u' is root
     else {
       //node hop from root to get v
-      if(beta[1])
+      if(beta.length() > 1)
       {
         v = nodeHop(uPrime, beta.substr(1));
       }
@@ -156,7 +156,7 @@ SuffixTreeNode * SuffixTree::slInsert(SuffixTreeNode * last, string suffix)
       assert (v != nullptr);
       //set suffix link of u to v
       u->setSL(v);
-      return findPath(v,  suffix + v->getDepth());
+      return findPath(v,  suffix.substr(v->getDepth()));
     }
   }
   //default: return nullptr;
@@ -166,7 +166,7 @@ SuffixTreeNode * SuffixTree::slInsert(SuffixTreeNode * last, string suffix)
 //helper function for the node hop operation. Called by slInsert.
 //Either locates the correct node (v) that already exists, or creates it.
 //Returns the node v
-SuffixTreeNode * SuffixTree::nodeHop(SuffixTreeNode * start, string beta)
+SuffixTreeNode * SuffixTree::nodeHop(SuffixTreeNode * start, const string & beta)
 {
   size_t betaIndex = 0;
   unsigned int startDepth = start->getDepth();
@@ -179,7 +179,7 @@ SuffixTreeNode * SuffixTree::nodeHop(SuffixTreeNode * start, string beta)
     child = current->getChild(beta[betaIndex]);
     assert(child != nullptr);
 
-    if(betaLen + startDepth < child->getDepth())
+    if(beta.length() + startDepth < child->getDepth())
     {
       //we overshot and need to add an internal node
       SuffixTreeNode * newInternalNode
