@@ -66,7 +66,7 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, char * suffix)
         suffixIndex++;
       }
 
-      if(suffixIndex < strlen(suffix))
+      if(suffixIndex > strlen(suffix))
       {
         //we have reached the end of the suffix
         //add a new internal node and leaf with label $
@@ -81,6 +81,7 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, char * suffix)
 
         return newLeafNode;
       }
+      current = child;
     }
   }
 }
