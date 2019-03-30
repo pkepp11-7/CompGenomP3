@@ -29,7 +29,6 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, const string & suf
       string newLabel = suffix.substr(suffixIndex);
       SuffixTreeNode * newLeaf = new SuffixTreeNode(id, newLabel, nullptr);
       current->addChild(newLeaf);
-      STData::incrementLeafNodes();
 
       return newLeaf;
     }
@@ -51,7 +50,6 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, const string & suf
           //add new internal node
           SuffixTreeNode * newInternalNode =
            current->addInternalNode(childLabel[0], labelIndex, ++lastInternalId);
-          STData::incrementInternalNodes();
 
           //add new leaf to the end of new internal node
           //char * newLabel = new char[suffixLen - suffixIndex + 1];
@@ -60,7 +58,6 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, const string & suf
           SuffixTreeNode * newLeafNode = new SuffixTreeNode(id, newLabel, nullptr);
 
           newInternalNode->addChild(newLeafNode);
-          STData::incrementLeafNodes();
 
           return newLeafNode;
         }
@@ -76,11 +73,9 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, const string & suf
 
         SuffixTreeNode * newInternalNode =
           current->addInternalNode(childLabel[0], labelIndex, ++lastInternalId);
-        STData::incrementInternalNodes();
 
         SuffixTreeNode * newLeafNode = new SuffixTreeNode(id, "$", nullptr);
         newInternalNode->addChild(newLeafNode);
-        STData::incrementLeafNodes();
 
         return newLeafNode;
       }
@@ -186,7 +181,6 @@ SuffixTreeNode * SuffixTree::nodeHop(SuffixTreeNode * start, const string & beta
         = current->addInternalNode(child->getLabel()[0],
                                    beta.length() + startDepth - current->getDepth(),
                                    ++lastInternalId);
-      STData::incrementInternalNodes();
       return newInternalNode;
     }
     else if(beta.length() + startDepth == child->getDepth())

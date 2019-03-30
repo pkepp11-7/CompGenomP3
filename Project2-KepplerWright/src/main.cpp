@@ -69,7 +69,8 @@ int main(int argc, char * argv[])
       }
       if((testMode & 32) == 32)
       {
-        system("pause");
+        printf("pausing\n");
+        getchar();
       }
       //done, delete BWT
       STData::done();
