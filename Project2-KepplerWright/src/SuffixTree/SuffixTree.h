@@ -4,6 +4,7 @@
 
 #include "SuffixTreeNode.h"
 #include "STData.h"
+#include <string>
 
 class SuffixTree {
 
@@ -12,6 +13,7 @@ private:
 //***********data*****************
 SuffixTreeNode * root, * lastInserted;
 unsigned int lastInternalId;
+string inputString;
 
 //******private methods***********
 
@@ -35,6 +37,7 @@ public:
 
 //********constructors*************
 
+SuffixTree(string inputstring);
 SuffixTree();
 
 //*******public methods*************
@@ -42,12 +45,12 @@ SuffixTree();
 //naive suffix tree insertion.
 //Invokes FindPath on every suffix of the parameter string, but only uses root
 //returns true if all suffixes inserted successfully
-bool basicInsert(char  * str, unsigned int length);
+bool basicInsert(const string& str, unsigned int length);
 
 //McCreight's suffix tree insertion.
 //Invokes FindPath on every suffix of the parameter string, and uses suffix links
 //returns true if all suffixes inserted successfully
-bool McCreightInsert(char * str, unsigned int length);
+bool McCreightInsert(const string&, unsigned int length);
 
 //Depth-first search. Used for gathering data and constructing the BWT
 void DFS();

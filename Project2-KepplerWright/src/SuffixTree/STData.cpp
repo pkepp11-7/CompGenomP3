@@ -3,7 +3,8 @@
 
 //set default static variable values
 unsigned int STData::internalNodes = 0, STData::leafNodes = 0, STData::len = 0, STData::position = 0;
-char * STData::bwt = nullptr, * STData::inputStr = nullptr;
+string& STData::bwt = generateStringReference(""); 
+string& STData::inputStr = generateStringReference("");
 struct timeval * STData::startTime = nullptr, * STData::endTime = nullptr;
 SuffixTreeNode * STData::deepestInternal = nullptr;
 
@@ -15,21 +16,28 @@ string STData::constructLongestRepeat(SuffixTreeNode * currentNode)
   {
     return "";
   }
-  else return constructLongestRepeat(currentNode->getParent()) + currentNode->getLabel();
+  else return constructLongestRepeat(currentNode->getParent()) + 
+    currentNode->getLabel(inputStr);
+}
+
+static string& generateStringReference(const string & str)
+{
+  string retString = string(str);
+  return retString;
 }
 
 //*******public methods*************
 
 //initialize the static class
-void STData::init(char * str, const unsigned int & length)
+void STData::init(const string& str, const unsigned int & length)
 {
   len = length;
-  inputStr =  str;
+  inputStr = str;
   position = 0;
   internalNodes = 0;
   leafNodes = 0;
 
-  if(bwt != nullptr)
+  if(bwt != "")
   {
     done();
   }
@@ -39,10 +47,9 @@ void STData::init(char * str, const unsigned int & length)
 //destroy the dynamically-sized bwt table, as well as timers if used
 void STData::done()
 {
-  if(bwt != nullptr)
+  if(bwt != "")
   {
-    delete[] bwt;
-    bwt = nullptr;
+    bwt = "";
   }
   if(startTime != nullptr)
    {

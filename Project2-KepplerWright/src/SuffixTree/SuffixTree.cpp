@@ -19,16 +19,13 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, const string & suf
 
   while(suffixIndex < suffix.length())
   {
-    child = current->getChild(suffix[suffixIndex]);
+    child = current->getChild(suffix[suffixIndex], inputString);
 
     if(child == nullptr)
     {
       //could not find child add a new branch
-      //char * newLabel = new char[suffixLen - suffixIndex + 1];
-      //newLabel = strcpy(newLabel, &suffix[suffixIndex]);
-      string newLabel = suffix.substr(suffixIndex);
-      SuffixTreeNode * newLeaf = new SuffixTreeNode(id, newLabel, nullptr);
-      current->addChild(newLeaf);
+      SuffixTreeNode * newLeaf = new SuffixTreeNode(id, 0, suffixIndex, nullptr);
+      current->addChild(newLeaf, inputString);
 
       return newLeaf;
     }
@@ -37,7 +34,7 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, const string & suf
       //found child need to walk down
       labelIndex = 0;
       int comparison = 0;
-      string childLabel = child->getLabel();
+      string childLabel = child->getLabel(inputString);
 
       while(labelIndex < childLabel.length() && suffixIndex < suffix.length())
       {
@@ -49,15 +46,15 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, const string & suf
 
           //add new internal node
           SuffixTreeNode * newInternalNode =
-           current->addInternalNode(childLabel[0], labelIndex, ++lastInternalId);
+           current->addInternalNode(childLabel[0], labelIndex, ++lastInternalId, inputString);
 
           //add new leaf to the end of new internal node
           //char * newLabel = new char[suffixLen - suffixIndex + 1];
           //newLabel = strcpy(newLabel, &suffix[suffixIndex]);
           string newLabel = suffix.substr(suffixIndex);
-          SuffixTreeNode * newLeafNode = new SuffixTreeNode(id, newLabel, nullptr);
+          SuffixTreeNode * newLeafNode = new SuffixTreeNode(id, 0, suffixIndex, nullptr);
 
-          newInternalNode->addChild(newLeafNode);
+          newInternalNode->addChild(newLeafNode, inputString);
 
           return newLeafNode;
         }
@@ -72,10 +69,18 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, const string & suf
         //add a new internal node and leaf with label $
 
         SuffixTreeNode * newInternalNode =
-          current->addInternalNode(childLabel[0], labelIndex, ++lastInternalId);
+          current->addInternalNode(childLabel[0], labelIndex, ++lastInternalId, inputString);
 
-        SuffixTreeNode * newLeafNode = new SuffixTreeNode(id, "$", nullptr);
-        newInternalNode->addChild(newLeafNode);
+        //check to make sure that this is indeed the $ char
+        assert(
+          inputString.substr(inputString.size()-1, inputString.size()).compare("$") == 0
+          );
+
+        SuffixTreeNode * newLeafNode = new SuffixTreeNode(id, 
+                                                          inputString.size()-1, 
+                                                          inputString.size(), 
+                                                          nullptr);
+        newInternalNode->addChild(newLeafNode, inputString);
 
         return newLeafNode;
       }
@@ -118,7 +123,7 @@ SuffixTreeNode * SuffixTree::slInsert(SuffixTreeNode * last, const string & suff
 
     //save u', beta
     uPrime = u->getParent();
-    beta = u->getLabel();
+    beta = u->getLabel(inputString);
 
     //case A: u' is not the root
     if(uPrime->getId() != 0)
@@ -171,16 +176,16 @@ SuffixTreeNode * SuffixTree::nodeHop(SuffixTreeNode * start, const string & beta
 
   while(true)
   {
-    child = current->getChild(beta[betaIndex]);
+    child = current->getChild(beta[betaIndex], inputString);
     assert(child != nullptr);
 
     if(beta.length() + startDepth < child->getDepth())
     {
       //we overshot and need to add an internal node
       SuffixTreeNode * newInternalNode
-        = current->addInternalNode(child->getLabel()[0],
+        = current->addInternalNode(child->getLabel(inputString)[0],
                                    beta.length() + startDepth - current->getDepth(),
-                                   ++lastInternalId);
+                                   ++lastInternalId, inputString);
       return newInternalNode;
     }
     else if(beta.length() + startDepth == child->getDepth())
@@ -220,18 +225,24 @@ void SuffixTree::DFS(SuffixTreeNode * currentNode)
 
 
 //********constructors*************
-SuffixTree::SuffixTree()
+SuffixTree::SuffixTree(string inputstring)
 {
   root = new SuffixTreeNode();
   lastInserted = root;
   lastInternalId = 0;
+  inputString = inputstring;
+}
+
+SuffixTree::SuffixTree()
+{
+  
 }
 
 
 //naive suffix tree insertion.
 //Invokes FindPath on every suffix of the parameter string, but only uses root
 //returns true if all suffixes inserted successfully
-bool SuffixTree::basicInsert(char * str, unsigned int length)
+bool SuffixTree::basicInsert(const string& str, unsigned int length)
 {
   bool success = false;
   unsigned int i;
@@ -243,7 +254,7 @@ bool SuffixTree::basicInsert(char * str, unsigned int length)
   for(i = 0; i < length; i++)
   {
     //do findpath from root
-    lastInserted = findPath(root, str + i);
+    lastInserted = findPath(root, str.substr(i));
   }
   //all suffixes added, success.
   success = true;
@@ -254,7 +265,7 @@ bool SuffixTree::basicInsert(char * str, unsigned int length)
 //McCreight's suffix tree insertion.
 //Invokes FindPath on every suffix of the parameter string, and uses suffix links
 //returns true if all suffixes inserted successfully
-bool SuffixTree::McCreightInsert(char * str, unsigned int length)
+bool SuffixTree::McCreightInsert(const string & str, unsigned int length)
 {
   bool success = false;
   unsigned int i;
@@ -267,7 +278,7 @@ bool SuffixTree::McCreightInsert(char * str, unsigned int length)
   for(i = 0; i < length; i++)
   {
     //call slInsert to handle insert cases
-    lastInserted = slInsert(lastInserted, str + i);
+    lastInserted = slInsert(lastInserted, str.substr(i));
   }
   //all suffixes added, success.
   success = true;

@@ -16,6 +16,8 @@ private:
 unsigned int id, depth;
 SuffixTreeNode * childrenPointer, * sibling, * parent, * sl;
 string label;
+size_t labelIndex;
+size_t labelLenght;
 
 
 //******private methods***********
@@ -23,7 +25,8 @@ string label;
 //adds and returns sibling if possible
 SuffixTreeNode * 
     addSibling(SuffixTreeNode * newSibling, 
-               SuffixTreeNode * firstSibling);
+               SuffixTreeNode * firstSibling,
+               const string& inputStrin);
 public:
 
 //********constructors*************
@@ -33,7 +36,13 @@ SuffixTreeNode();
 
 //constructor with arguments. Requires an id, label string, and a pointer to the parent.
 //Optional child and sibling pointers, default to null if not provided. Depth in tree can be passed in, or computed by default.
-SuffixTreeNode(const int & newId, const string & labelStr, SuffixTreeNode * parentPtr, SuffixTreeNode * childPtr = nullptr, SuffixTreeNode * siblingPtr = nullptr, const int & treeDepth = 0);
+SuffixTreeNode(const int & newId, 
+               size_t labelIndex,
+               size_t labelLength, 
+               SuffixTreeNode * parentPtr, 
+               SuffixTreeNode * childPtr = nullptr, 
+               SuffixTreeNode * siblingPtr = nullptr, 
+               const int & treeDepth = 0);
 
 
 //*******public methods*************
@@ -43,10 +52,10 @@ unsigned int getDepth() const;
 unsigned int getId() const;
 SuffixTreeNode * getParent();
 SuffixTreeNode * getChildPointer();
-SuffixTreeNode * getChild(char firstLabel);
+SuffixTreeNode * getChild(char firstLabel, const string & inputString);
 SuffixTreeNode * getSibling();
 SuffixTreeNode * getSL();
-string getLabel();
+string getLabel(const string& inputString) const;
 
 void setSibling(SuffixTreeNode * newSibling);
 void setParent(SuffixTreeNode * newParent);
@@ -55,19 +64,22 @@ void setChildrenPointer(SuffixTreeNode * newChildPointer);
 //also tells children and siblings to recalculate depth
 void calculateDepth();
 void setDepth(int newDepth);
-void setLabel(const string & newLabel);
+void setLabel(size_t labelStartIndex, size_t labelLength);
 
 //mutators
 void setSL(SuffixTreeNode * v);
 
 //adds a child to the node maintaing lexographic ordering
-SuffixTreeNode * addChild(SuffixTreeNode * newChild);
+SuffixTreeNode * addChild(SuffixTreeNode * newChild, const string& inputString);
 //removes a child from the node and returns it 
-SuffixTreeNode * removeChild(SuffixTreeNode * childToRemove);
+SuffixTreeNode * removeChild(SuffixTreeNode * childToRemove, const string& inputStrin);
 //adds a new internal node along the edge
 //firstLable: char of the label we will break
 //indexBreak: index where the break will occure
-SuffixTreeNode * addInternalNode(char firstLabel, int indexBreak, int id);
+SuffixTreeNode * addInternalNode(char firstLabel, 
+                                 int indexBreak, 
+                                 int id, 
+                                 const string& inputStrin);
 
 };
 

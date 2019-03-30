@@ -33,19 +33,17 @@ int main(int argc, char * argv[])
       fastaString.append("$");
       //get char *, length
       length = fastaString.length();
-      const char * immutableStr = fastaString.c_str();
-      cString = new char[length];
-      strcpy(cString, immutableStr);
+      const string immutableStr = fastaString;
       //create a suffix tree
-      suffixTree = SuffixTree();
+      suffixTree = SuffixTree(immutableStr);
       //TODO:replace with McCreight when ready
       STData::startTimer();
-      suffixTree.McCreightInsert(cString, length);
+      suffixTree.McCreightInsert(immutableStr, length);
       STData::stopTimer();
       //1's place is 1: do dfs
       if((testMode & 1) == 1)
       {
-        STData::init(cString, length);
+        STData::init(immutableStr, length);
         suffixTree.DFS();
         //2's place is 1: print bwt
         if((testMode & 2) == 2)
