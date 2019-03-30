@@ -151,7 +151,7 @@ void STData::printLongestRepeat()
       cout << child->getId() << " ";
       child = child->getSibling();
     }
-    cout << "\n";
+    cout << "\n" << "Length: " << deepestInternal->getDepth() << "\n";
   }
   
 }
