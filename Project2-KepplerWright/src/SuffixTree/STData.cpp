@@ -81,11 +81,11 @@ void STData::findLongestRepeat(SuffixTreeNode * inNode)
 
 void STData::pushBwt(unsigned int index)
 {
-  if(index == 0)
+  if(index == 1)
   {
-    index = len;
+    index = len + 1;
   }
-  bwt[position] = inputStr[index - 1];
+  bwt[position] = inputStr[index - 2];
   position++;
 }
 
@@ -130,7 +130,7 @@ void STData::printElapsedTime()
 {
   //elapsed time in milliseconds
   assert(startTime != nullptr && endTime != nullptr);
-  unsigned int elapsedTimeMs = (endTime->tv_sec - startTime->tv_sec) * 1000 + (endTime->tv_usec - endTime->tv_usec) / 1000;
+  unsigned int elapsedTimeMs = (endTime->tv_sec - startTime->tv_sec) * 1000 + (endTime->tv_usec - startTime->tv_usec) / 1000;
   cout << "ST construction time: " << elapsedTimeMs << "ms\n";
 
 }
@@ -139,9 +139,19 @@ void STData::printElapsedTime()
 void STData::printLongestRepeat()
 {
   string longestRepeat;
+  bool exit = false;
   if(deepestInternal != nullptr)
   {
     longestRepeat = constructLongestRepeat(deepestInternal);
+    cout << "Longest Repeating segment: " << longestRepeat << '\n';
+    cout << "locations: ";
+    SuffixTreeNode * child = deepestInternal->getChildPointer();
+    while(child != nullptr)
+    {
+      cout << child->getId() << " ";
+      child = child->getSibling();
+    }
+    cout << "\n" << "Length: " << deepestInternal->getDepth() << "\n";
   }
-  cout << "Longest Repeating segment: " << longestRepeat << '\n';
+  
 }
