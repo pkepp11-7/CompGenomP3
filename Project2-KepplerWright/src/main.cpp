@@ -41,6 +41,7 @@ int main(int argc, char * argv[])
       //TODO:replace with McCreight when ready
       STData::startTimer();
       suffixTree.McCreightInsert(cString, length);
+      STData::stopTimer();
       //1's place is 1: do dfs
       if((testMode & 1) == 1)
       {
