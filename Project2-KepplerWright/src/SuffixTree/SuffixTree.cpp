@@ -184,7 +184,7 @@ SuffixTreeNode * SuffixTree::nodeHop(SuffixTreeNode * start, const string & beta
       //we overshot and need to add an internal node
       SuffixTreeNode * newInternalNode
         = current->addInternalNode(child->getLabel()[0],
-                                   beta.length() - current->getDepth(),
+                                   beta.length() + startDepth - current->getDepth(),
                                    ++lastInternalId);
       STData::incrementInternalNodes();
       return newInternalNode;
