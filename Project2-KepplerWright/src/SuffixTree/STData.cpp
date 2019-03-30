@@ -139,9 +139,19 @@ void STData::printElapsedTime()
 void STData::printLongestRepeat()
 {
   string longestRepeat;
+  bool exit = false;
   if(deepestInternal != nullptr)
   {
     longestRepeat = constructLongestRepeat(deepestInternal);
+    cout << "Longest Repeating segment: " << longestRepeat << '\n';
+    cout << "locations: ";
+    SuffixTreeNode * child = deepestInternal->getChildPointer();
+    while(child != nullptr)
+    {
+      cout << child->getId() << " ";
+      child = child->getSibling();
+    }
+    cout << "\n";
   }
-  cout << "Longest Repeating segment: " << longestRepeat << '\n';
+  
 }
