@@ -130,7 +130,7 @@ void STData::printElapsedTime()
 {
   //elapsed time in milliseconds
   assert(startTime != nullptr && endTime != nullptr);
-  unsigned int elapsedTimeMs = (endTime->tv_sec - startTime->tv_sec) * 1000 + (endTime->tv_usec - endTime->tv_usec) / 1000;
+  unsigned int elapsedTimeMs = (endTime->tv_sec - startTime->tv_sec) * 1000 + (endTime->tv_usec - startTime->tv_usec) / 1000;
   cout << "ST construction time: " << elapsedTimeMs << "ms\n";
 
 }
