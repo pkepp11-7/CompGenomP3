@@ -13,7 +13,7 @@ SuffixTreeNode::SuffixTreeNode()
   childrenPointer = nullptr;
   sibling = nullptr;
   sl = this;
-  label = nullptr;
+  label = "";
 }
 
 

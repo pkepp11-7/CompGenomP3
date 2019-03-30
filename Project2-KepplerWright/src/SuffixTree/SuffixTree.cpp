@@ -40,7 +40,7 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, const string & suf
       int comparison = 0;
       string childLabel = child->getLabel();
 
-      while(labelIndex < suffix.length() && suffixIndex < suffix.length())
+      while(labelIndex < childLabel.length() && suffixIndex < suffix.length())
       {
         comparison = Alphabet::compare(suffix[suffixIndex], childLabel[labelIndex]);
 
@@ -198,6 +198,7 @@ SuffixTreeNode * SuffixTree::nodeHop(SuffixTreeNode * start, const string & beta
     {
       //we need to keep go deeper
       betaIndex = child->getDepth() - startDepth;
+      current = child;
     }
   }
 }
