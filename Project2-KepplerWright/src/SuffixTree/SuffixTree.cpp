@@ -38,7 +38,7 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, unsigned int suffi
       labelIndex = 0;
       int comparison = 0;
       Label childLabel = child->getLabel();
-      string childString = fullString->substr(childLabel.startIndex, childLabel.endIndex);
+      string childString = fullString->substr(childLabel.startIndex, childLabel.endIndex - childLabel.startIndex);
 
       while(labelIndex < childString.length() && suffixIndex < fullString->length() - suffix)
       {
@@ -137,7 +137,7 @@ SuffixTreeNode * SuffixTree::slInsert(SuffixTreeNode * last, unsigned int suffix
       assert(v != nullptr);
       //set suffix link of u to v
       u->setSL(v);
-      return findPath(v,  (*fullString)[suffix +v->getDepth()]);
+      return findPath(v,  suffix + v->getDepth());
     }
     //case B: u' is root
     else {
@@ -169,7 +169,7 @@ SuffixTreeNode * SuffixTree::nodeHop(SuffixTreeNode * start, const Label & beta)
 {
   size_t betaIndex = 0;
   unsigned int startDepth = start->getDepth();
-  string betaString = fullString->substr(beta.startIndex, beta.endIndex);
+  string betaString = fullString->substr(beta.startIndex, beta.endIndex - beta.startIndex);
   SuffixTreeNode * current = start;
   SuffixTreeNode * child = nullptr;
 
