@@ -197,10 +197,11 @@ SuffixTreeNode * SuffixTreeNode::addSibling(SuffixTreeNode * newSibling,
   newSibling->calculateDepth();
 
   Label newSiblingLabel = newSibling->getLabel();
-  Label currentSiblingLabel = currentSibling->getLabel();
+  Label currentSiblingLabel;
 
   while(!inserted)
   {
+    currentSiblingLabel = currentSibling->getLabel();
     ordering = Alphabet::compare((*fullString)[newSiblingLabel.startIndex], (*fullString)[currentSiblingLabel.startIndex]);
     //we should not be inserting the same characters
     //assert(ordering != 0 || newSibling->getLabel()[0] != '$');
@@ -306,11 +307,12 @@ SuffixTreeNode * SuffixTreeNode::addInternalNode(char firstLabel, const string *
   //string oldLabelString = string(childAlongEdge->getLabel());
   Label oldLabel = childAlongEdge->getLabel();
   //string childAlongEdgeLabelString = string(oldLabelString.substr(indexBreak));
-  Label childAlongEdgeLabel= oldLabel;
+  Label childAlongEdgeLabel = oldLabel;
+
   childAlongEdgeLabel.startIndex += indexBreak;
   //string newInternalNodeLabelString= string(oldLabelString.substr(0, indexBreak));
-  Label newInternalNodeLabel= oldLabel;
-  newInternalNodeLabel.endIndex -= indexBreak;
+  Label newInternalNodeLabel = oldLabel;
+  newInternalNodeLabel.endIndex = oldLabel.startIndex + indexBreak;
   //save memory
   //oldLabelString = "";
 

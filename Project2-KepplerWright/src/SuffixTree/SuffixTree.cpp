@@ -99,7 +99,7 @@ SuffixTreeNode * SuffixTree::slInsert(SuffixTreeNode * last, unsigned int suffix
 
   u = last->getParent();
 
-  //case I: uffix link is known
+  //case I: suffix link is known
   if(u->getSL())
   {
     //case A: u is not the root
