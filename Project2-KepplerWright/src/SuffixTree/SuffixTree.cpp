@@ -271,6 +271,11 @@ bool SuffixTree::McCreightInsert(string * str)
   //for each suffix in the string
   for(i = 0; i < str->length(); i++)
   {
+    if(str->substr(i,8) == "CGGCGGTT")
+    {
+      cout << "Reached target string\n";
+      getchar();
+    }
     //call slInsert to handle insert cases
     lastInserted = slInsert(lastInserted, i);
   }
