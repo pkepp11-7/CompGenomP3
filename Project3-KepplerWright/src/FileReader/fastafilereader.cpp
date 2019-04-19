@@ -3,6 +3,7 @@
 
 FastaFileReader::FastaFileReader(fstream * infile) : FileReader(infile)
 {
+  /*
   string currentName = "", currentSequence = "";
   sequences = vector<Sequence>();
   int index;
@@ -58,8 +59,11 @@ FastaFileReader::FastaFileReader(fstream * infile) : FileReader(infile)
 
   //call doneReading to close the file
   doneReading();
+  */
 }
 
+
+/*
 Sequence FastaFileReader::getSequenceByIndex(const int & index) const
 {
   Sequence mySequence = {"", ""};
@@ -86,4 +90,58 @@ Sequence FastaFileReader::getSequenceByName(const string & name) const
   }
   //if not found, return a struct with empty strings
   return mySequence;
+}
+*/
+
+//Access sequences in the order presented in the file.
+//Will return an empty string in name and nucleotide_sequence when at end of file
+Sequence FastaFileReader::getNextSequence() 
+{
+  int index;
+  string currentName ="", currentSequence = "";
+  string currentLine = readLine();
+  Sequence sequence = {"", ""};
+  if(eof && currentLine.compare("end") != 0)
+  {
+    //header, contains a name
+    if(currentLine.length() > 0 && currentLine[0] == '>')
+    {
+        index = 1;
+        //check for the first whitespace character (space, tab, or null character)
+        while(currentLine[index] != ' ' && currentLine[index] != 9 && currentLine[index] != 0)
+        {
+          index++;
+        }
+        currentName = currentLine.substr(1, index);
+    }
+
+    else if(currentLine.length() > 0)
+    {
+      //convert all characters to uppercase
+      for(index = 0; index < currentLine.length(); index++)
+      {
+        if(currentLine[index] >= 'a' && currentLine[index] <= 'z')
+        {
+          currentLine[index] = currentLine[index] - 'a' + 'A';
+        }
+      }
+      currentSequence += currentLine;
+    }
+    //empty line, add existing sequence to end of list if it exists
+    else
+    {
+      if(currentName.length() > 0)
+      {
+
+        sequence.name = currentName;
+        sequence.nucleotideSequence = currentSequence;
+      }
+    }
+  }
+  else 
+  {
+    eof = false;
+    doneReading();
+  }
+  return sequence;
 }
