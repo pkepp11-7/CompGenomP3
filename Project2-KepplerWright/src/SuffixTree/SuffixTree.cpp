@@ -38,11 +38,13 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, unsigned int suffi
       labelIndex = 0;
       int comparison = 0;
       Label childLabel = child->getLabel();
-      string childString = fullString->substr(childLabel.startIndex, childLabel.endIndex - childLabel.startIndex);
+      //string childString = fullString->substr(childLabel.startIndex, childLabel.endIndex - childLabel.startIndex);
 
-      while(labelIndex < childString.length() && suffixIndex < fullString->length() - suffix)
+      //while(labelIndex < childString.length() && suffixIndex < fullString->length() - suffix)
+      while(labelIndex < (childLabel.endIndex - childLabel.startIndex))
       {
-        comparison = Alphabet::compare((*fullString)[suffix + suffixIndex], childString[labelIndex]);
+        //comparison = Alphabet::compare((*fullString)[suffix + suffixIndex], childString[labelIndex]);
+        comparison = Alphabet::compare((*fullString)[suffix + suffixIndex], (*fullString)[childLabel.startIndex + labelIndex]);
 
         if(comparison != 0)
         {
@@ -50,7 +52,8 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, unsigned int suffi
 
           //add new internal node
           SuffixTreeNode * newInternalNode =
-           current->addInternalNode(childString[0], fullString, labelIndex, ++lastInternalId);
+            current->addInternalNode((*fullString)[childLabel.startIndex], fullString, labelIndex, ++lastInternalId);
+           //current->addInternalNode(childString[0], fullString, labelIndex, ++lastInternalId);
 
           //add new leaf to the end of new internal node
           //char * newLabel = new char[suffixLen - suffixIndex + 1];
@@ -73,7 +76,8 @@ SuffixTreeNode * SuffixTree::findPath(SuffixTreeNode * start, unsigned int suffi
         //add a new internal node and leaf with label $
 
         SuffixTreeNode * newInternalNode =
-          current->addInternalNode(childString[0], fullString, labelIndex, ++lastInternalId);
+          current->addInternalNode((*fullString)[childLabel.startIndex], fullString, labelIndex, ++lastInternalId);
+          //current->addInternalNode(childString[0], fullString, labelIndex, ++lastInternalId);
 
         Label endLabel = {fullString->length() -1, fullString->length()};
 
@@ -142,7 +146,7 @@ SuffixTreeNode * SuffixTree::slInsert(SuffixTreeNode * last, unsigned int suffix
     //case B: u' is root
     else {
       //node hop from root to get v
-      if(beta.endIndex - beta.startIndex > 2)
+      if(beta.endIndex - beta.startIndex > 1)
       {
         beta.startIndex++;
         v = nodeHop(uPrime, beta);
@@ -169,25 +173,33 @@ SuffixTreeNode * SuffixTree::nodeHop(SuffixTreeNode * start, const Label & beta)
 {
   size_t betaIndex = 0;
   unsigned int startDepth = start->getDepth();
-  string betaString = fullString->substr(beta.startIndex, beta.endIndex - beta.startIndex);
+  //string betaString = fullString->substr(beta.startIndex, beta.endIndex - beta.startIndex);
   SuffixTreeNode * current = start;
   SuffixTreeNode * child = nullptr;
 
   while(true)
   {
-    child = current->getChild(betaString[betaIndex], fullString);
+    //child = current->getChild(betaString[betaIndex], fullString);
+    child = current->getChild((*fullString)[betaIndex + beta.startIndex], fullString);
     assert(child != nullptr);
 
-    if(betaString.length() + startDepth < child->getDepth())
+    //if(betaString.length() + startDepth < child->getDepth())
+    if((beta.endIndex - beta.startIndex) + startDepth < child->getDepth())
     {
       //we overshot and need to add an internal node
       SuffixTreeNode * newInternalNode
+      = current->addInternalNode((*fullString)[child->getLabel().startIndex], fullString,
+                                   (beta.endIndex-beta.startIndex) + startDepth - current->getDepth(),
+                                   ++lastInternalId);
+      /*
         = current->addInternalNode((*fullString)[child->getLabel().startIndex], fullString,
                                    betaString.length() + startDepth - current->getDepth(),
                                    ++lastInternalId);
+      */
       return newInternalNode;
     }
-    else if(betaString.length() + startDepth == child->getDepth())
+    //else if(betaString.length() + startDepth == child->getDepth())
+    else if((beta.endIndex - beta.startIndex) + startDepth == child->getDepth())
     {
       //we have found our lost child V!
       return child;
@@ -271,11 +283,6 @@ bool SuffixTree::McCreightInsert(string * str)
   //for each suffix in the string
   for(i = 0; i < str->length(); i++)
   {
-    if(str->substr(i,8) == "CGGCGGTT")
-    {
-      cout << "Reached target string\n";
-      getchar();
-    }
     //call slInsert to handle insert cases
     lastInserted = slInsert(lastInserted, i);
   }
