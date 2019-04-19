@@ -14,11 +14,15 @@ typedef struct sequence
 class FastaFileReader: public FileReader {
 public:
   FastaFileReader(fstream * infile = NULL);
+  /*
   Sequence getSequenceByIndex(const int & index) const;
   Sequence getSequenceByName(const string & name) const;
+  */
+  Sequence getNextSequence();
 
 private:
-  vector<Sequence> sequences;
+  //vector<Sequence> sequences;
+  bool eof;
 };
 
 #endif
