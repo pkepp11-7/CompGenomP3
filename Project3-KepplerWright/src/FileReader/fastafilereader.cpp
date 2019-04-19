@@ -3,6 +3,7 @@
 
 FastaFileReader::FastaFileReader(fstream * infile) : FileReader(infile)
 {
+  eof = false;
   /*
   string currentName = "", currentSequence = "";
   sequences = vector<Sequence>();
@@ -98,10 +99,12 @@ Sequence FastaFileReader::getSequenceByName(const string & name) const
 Sequence FastaFileReader::getNextSequence() 
 {
   int index;
+  bool foundSequence = false;
   string currentName ="", currentSequence = "";
   string currentLine = readLine();
   Sequence sequence = {"", ""};
-  if(eof && currentLine.compare("end") != 0)
+
+  while(!eof && !foundSequence && currentLine.compare("end") != 0)
   {
     //header, contains a name
     if(currentLine.length() > 0 && currentLine[0] == '>')
@@ -135,12 +138,14 @@ Sequence FastaFileReader::getNextSequence()
 
         sequence.name = currentName;
         sequence.nucleotideSequence = currentSequence;
+        foundSequence = true;
       }
     }
+    currentLine = readLine();
   }
-  else 
+  if(currentLine.compare("end") == 0)
   {
-    eof = false;
+    eof = true;
     doneReading();
   }
   return sequence;

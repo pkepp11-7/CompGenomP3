@@ -28,7 +28,7 @@ int main(int argc, char * argv[])
 
       fastaReader = FastaFileReader(&fastaFile);
       alphabetReader = AlphabetFileReader(&alphabetFile);
-      fastaString = fastaReader.getSequenceByIndex(0).nucleotideSequence;
+      fastaString = fastaReader.getNextSequence().nucleotideSequence;
       //add the $ to the end of the input string
       fastaString.append("$");
       //get char *, length
