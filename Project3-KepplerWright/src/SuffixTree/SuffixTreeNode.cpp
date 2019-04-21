@@ -9,6 +9,8 @@ SuffixTreeNode::SuffixTreeNode()
 {
   id = 0;
   depth = 0;
+  start_leaf_index = -1;
+  end_leaf_index = -1;
   parent = this;
   childrenPointer = nullptr;
   sibling = nullptr;
@@ -23,6 +25,8 @@ SuffixTreeNode::SuffixTreeNode(const int & newId, const Label & inLabel, SuffixT
 {
   id = newId;
   label = inLabel;
+  start_leaf_index = -1;
+  end_leaf_index = -1;
   parent = parentPtr;
   childrenPointer = childPtr;
   sibling = siblingPtr;
@@ -54,6 +58,18 @@ unsigned int SuffixTreeNode::getDepth() const
 unsigned int SuffixTreeNode::getId() const
 {
   return id;
+}
+
+//returns start leaf index
+int SuffixTreeNode::get_start_leaf_index() const
+{
+  return start_leaf_index;
+}
+
+//returns end leaf index
+int SuffixTreeNode::get_end_leaf_index() const
+{
+  return end_leaf_index;
 }
 
 //return a pointer to this node's parent
@@ -149,6 +165,20 @@ void SuffixTreeNode::setDepth(int newDepth)
 void SuffixTreeNode::setLabel(const Label & newLabel)
 {
   label = newLabel;
+}
+
+//sets the start index
+void SuffixTreeNode::set_start_leaf_index(int newStart)
+{
+  assert(newStart > -1);
+  start_leaf_index = newStart;
+}
+
+//sets the end index
+void SuffixTreeNode::set_end_leaf_index(int newEnd)
+{
+  assert(newEnd > -1);
+  end_leaf_index = newEnd;
 }
 
 //mutators

@@ -23,6 +23,7 @@ private:
 unsigned int id, depth;
 SuffixTreeNode * childrenPointer, * sibling, * parent, * sl;
 Label label;
+int start_leaf_index, end_leaf_index;
 
 
 //******private methods***********
@@ -49,6 +50,8 @@ SuffixTreeNode(const int & newId, const Label & inLabel, SuffixTreeNode * parent
 //accessors
 unsigned int getDepth() const;
 unsigned int getId() const;
+int get_start_leaf_index() const;
+int get_end_leaf_index() const;
 SuffixTreeNode * getParent();
 SuffixTreeNode * getChildPointer();
 SuffixTreeNode * getChild(char firstLabel, const string * fullString);
@@ -59,6 +62,8 @@ Label getLabel();
 void setSibling(SuffixTreeNode * newSibling);
 void setParent(SuffixTreeNode * newParent);
 void setChildrenPointer(SuffixTreeNode * newChildPointer);
+void set_start_leaf_index(int newStart);
+void set_end_leaf_index(int newEnd);
 //sets calculates and sets depth if possible
 //also tells children and siblings to recalculate depth
 void calculateDepth();
