@@ -12,6 +12,8 @@ private:
 //***********data*****************
 SuffixTreeNode * root, * lastInserted;
 unsigned int lastInternalId;
+//array that stores all leafs
+int * LeafArray;   
 
 string * fullString;
 
@@ -31,7 +33,7 @@ SuffixTreeNode * slInsert(SuffixTreeNode * last, unsigned int suffix);
 SuffixTreeNode * nodeHop(SuffixTreeNode * start, const Label & beta);
 
 //private recursive DFS function. Called by public DFS
-void DFS(SuffixTreeNode * currentNode);
+void DFS(SuffixTreeNode * currentNode, int &nextIndex);
 
 public:
 
@@ -53,6 +55,9 @@ bool McCreightInsert(string * str);
 
 //Depth-first search. Used for gathering data and constructing the BWT
 void DFS();
+
+//get suffix tree array used in tests
+int* getSuffixTreeLeafArray();
 
 };
 
