@@ -22,7 +22,7 @@ Alignment::Alignment(fstream * fastaFile, fstream * configFile)
   prepareTable();
 }
 
-Alignment::Alignment(Sequence s1, Sequence s2, fstream * configFile, int m_a, int m_i, int m_h, int m_g)
+Alignment::Alignment(Sequence & s1, Sequence & s2, fstream * configFile, int m_a, int m_i, int m_h, int m_g)
 {
   int index;
   //if config file supplied, get necessary data from files

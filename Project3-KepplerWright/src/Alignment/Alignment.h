@@ -22,7 +22,7 @@ class Alignment {
 
 public:
   Alignment(fstream * fastaFile = NULL, fstream * configFile = NULL);
-  Alignment(Sequence s1, Sequence s2, fstream * configFile = NULL, int m_a = 1, int m_i = -2, int m_h = -5, int m_g = -1);
+  Alignment(Sequence & s1, Sequence & s2, fstream * configFile = NULL, int m_a = 1, int m_i = -2, int m_h = -5, int m_g = -1);
 
   void doGlobalAlignment();
   void doLocalAlignment();
