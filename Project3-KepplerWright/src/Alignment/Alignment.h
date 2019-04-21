@@ -1,8 +1,8 @@
 #ifndef ALIGNMENT_H
 #define ALIGNMENT_H
 
-#include "FileReader/fastafilereader.h"
-#include "FileReader/configfilereader.h"
+#include "../FileReader/fastafilereader.h"
+#include "../FileReader/configfilereader.h"
 #include <iostream>
 #include <cmath>
 
@@ -13,6 +13,8 @@ using std::string;
 typedef struct alignmentData {
   unsigned int percentIdentity;
   unsigned int lengthCoverage;
+  unsigned int bestHit_j0;
+  unsigned int betsHit_j1;
 }AlignmentData;
 
 
@@ -20,7 +22,7 @@ class Alignment {
 
 public:
   Alignment(fstream * fastaFile = NULL, fstream * configFile = NULL);
-  Alignment(Sequence s1, Sequence s2, int m_a = 1, int m_i = -2, int m_h = -5, int m_g = -1);
+  Alignment(Sequence s1, Sequence s2, fstream * configFile = NULL, int m_a = 1, int m_i = -2, int m_h = -5, int m_g = -1);
 
   void doGlobalAlignment();
   void doLocalAlignment();
@@ -28,6 +30,8 @@ public:
   void printOutput();
   void printReport();
   void printTable();
+
+  AlignmentData getData();
 
 private:
   typedef struct scorecell {
@@ -49,6 +53,7 @@ private:
   Sequence s1, s2;
   bool isGlobal, tableReady;
   vector<AlignmentPair> printStack;
+  AlignmentData aData;
 
   //helper functions for computing scores
   void computeScoreS(const int & i, const int & j);
