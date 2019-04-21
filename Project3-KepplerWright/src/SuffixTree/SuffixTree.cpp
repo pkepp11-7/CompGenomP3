@@ -214,23 +214,56 @@ SuffixTreeNode * SuffixTree::nodeHop(SuffixTreeNode * start, const Label & beta)
 }
 
 
-void SuffixTree::DFS(SuffixTreeNode * currentNode)
+void SuffixTree::DFS(SuffixTreeNode * currentNode, int &nextIndex)
 {
+  //need to replace this with a global x
+  int x = 0;
+
   if(currentNode != nullptr)
   {
-    DFS(currentNode->getChildPointer());
-    //if current node is an internal node
-    if(currentNode->getId() > lastInserted->getId() || currentNode->getId() == 0)
+    //base case
+    if(currentNode == nullptr) {return; }
+
+    //if it is a leaf
+    if(currentNode->getId() <= lastInserted->getId() && currentNode->getId() != 0)
     {
-      STData::incrementInternalNodes();
-      STData::findLongestRepeat(currentNode);
-    }
-    else {
       STData::incrementLeafNodes();
       STData::pushBwt(currentNode->getId());
-    }
-    DFS(currentNode->getSibling());
 
+      LeafArray[nextIndex] = currentNode->getId();
+      if(currentNode->getDepth() >= x)
+      {
+        currentNode->set_start_leaf_index(nextIndex);
+        currentNode->set_end_leaf_index(nextIndex);
+      }
+      nextIndex++;
+      return;
+    }
+
+    //if it is an internal node
+    STData::incrementInternalNodes();
+    STData::findLongestRepeat(currentNode);
+
+    //recurse through all children
+    SuffixTreeNode* temp = currentNode->getChildPointer();
+    while(temp != nullptr)
+    {
+      DFS(temp, nextIndex);
+      temp = temp->getSibling();
+    }
+
+    //set leaf intervul for internal node
+    //only calculate for deep enough nodes
+    if(currentNode->getDepth() >= x)
+    {
+      SuffixTreeNode* left_child = currentNode->getChildPointer();
+      SuffixTreeNode* right_child = currentNode->getRightmostChildPointer();
+
+      assert(left_child != nullptr && right_child != nullptr);
+
+      currentNode->set_start_leaf_index(left_child->get_start_leaf_index());
+      currentNode->set_end_leaf_index(right_child->get_end_leaf_index());
+    }
   }
 }
 
@@ -297,5 +330,17 @@ bool SuffixTree::McCreightInsert(string * str)
 void SuffixTree::DFS()
 {
   //Calls recursive form of DFS
-  DFS(root);
+  LeafArray = new int[fullString->size()];
+  for(int i = 0; i < fullString->size(); i++)
+  {
+    LeafArray[i] = -1;
+  }
+
+  int nextIndex = 0;
+  DFS(root, nextIndex);
+}
+
+int* SuffixTree::getSuffixTreeLeafArray()
+{
+  return LeafArray;
 }
