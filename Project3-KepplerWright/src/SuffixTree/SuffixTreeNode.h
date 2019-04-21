@@ -54,6 +54,7 @@ int get_start_leaf_index() const;
 int get_end_leaf_index() const;
 SuffixTreeNode * getParent();
 SuffixTreeNode * getChildPointer();
+SuffixTreeNode * getRightmostChildPointer();
 SuffixTreeNode * getChild(char firstLabel, const string * fullString);
 SuffixTreeNode * getSibling();
 SuffixTreeNode * getSL();

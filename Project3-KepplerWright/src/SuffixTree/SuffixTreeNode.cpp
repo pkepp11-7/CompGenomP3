@@ -83,6 +83,19 @@ SuffixTreeNode * SuffixTreeNode::getChildPointer()
   return childrenPointer;
 }
 
+//returns the rightmost child of the node
+SuffixTreeNode * SuffixTreeNode::getRightmostChildPointer()
+{
+  SuffixTreeNode* current = childrenPointer;
+
+  while(!(current == nullptr || current->getSibling() == nullptr))
+  {
+    current = current->getSibling();
+  }
+
+  return current;
+}
+
 SuffixTreeNode * SuffixTreeNode::getChild(char firstLabel, const string * fullString)
 {
   int compare = 0;
