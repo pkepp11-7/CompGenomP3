@@ -10,10 +10,17 @@ using std::cin;
 using std::cout;
 using std::string;
 
+typedef struct alignmentData {
+  unsigned int percentIdentity;
+  unsigned int lengthCoverage;
+}AlignmentData;
+
+
 class Alignment {
 
 public:
   Alignment(fstream * fastaFile = NULL, fstream * configFile = NULL);
+  Alignment(Sequence s1, Sequence s2, int m_a = 1, int m_i = -2, int m_h = -5, int m_g = -1);
 
   void doGlobalAlignment();
   void doLocalAlignment();

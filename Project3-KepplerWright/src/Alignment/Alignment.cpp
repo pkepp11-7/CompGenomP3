@@ -3,14 +3,34 @@
 Alignment::Alignment(fstream * fastaFile, fstream * configFile)
 {
   int index;
+  //get necessary data from files
   mFastaReader = FastaFileReader(fastaFile);
   mConfigReader = ConfigFileReader(configFile);
-  s1 = mFastaReader.getSequenceByIndex(0);
-  s2 = mFastaReader.getSequenceByIndex(1);
+  s1 = mFastaReader.getNextSequence();
+  s2 = mFastaReader.getNextSequence();
   mM = s1.nucleotideSequence.length();
   mN = s2.nucleotideSequence.length();
 
   mConfigReader.getConfigParameters(mMatch, mMismatch, mH, mG);
+
+  //dynamic programming table includes rows 1-M and columns 1-N with special row and clolumn 0 for base cases.
+  dynamicTable = new ScoreCell * [mM + 1];
+  for(index = 0; index <= mM; index++)
+  {
+    dynamicTable[index] = new ScoreCell[mN + 1];
+  }
+  prepareTable();
+}
+
+Alignment::Alignment(Sequence s1, Sequence s2, int m_a, int m_i, int m_h, int m_g)
+{
+  int index;
+  //get necessary data from parameters
+  mM = s1.nucleotideSequence.length();
+  mN = s2.nucleotideSequence.length();
+  mMismatch = m_i;
+  mH = m_h;
+  mG = m_g;
 
   //dynamic programming table includes rows 1-M and columns 1-N with special row and clolumn 0 for base cases.
   dynamicTable = new ScoreCell * [mM + 1];
@@ -56,6 +76,11 @@ void Alignment::doGlobalAlignment()
   //******************* End retrace ****************************************************
 
 }
+
+
+
+
+
 
 void Alignment::doLocalAlignment()
 {
