@@ -3,14 +3,44 @@
 Alignment::Alignment(fstream * fastaFile, fstream * configFile)
 {
   int index;
+  //get necessary data from files
   mFastaReader = FastaFileReader(fastaFile);
   mConfigReader = ConfigFileReader(configFile);
-  s1 = mFastaReader.getSequenceByIndex(0);
-  s2 = mFastaReader.getSequenceByIndex(1);
+  s1 = mFastaReader.getNextSequence();
+  s2 = mFastaReader.getNextSequence();
   mM = s1.nucleotideSequence.length();
   mN = s2.nucleotideSequence.length();
 
   mConfigReader.getConfigParameters(mMatch, mMismatch, mH, mG);
+
+  //dynamic programming table includes rows 1-M and columns 1-N with special row and clolumn 0 for base cases.
+  dynamicTable = new ScoreCell * [mM + 1];
+  for(index = 0; index <= mM; index++)
+  {
+    dynamicTable[index] = new ScoreCell[mN + 1];
+  }
+  prepareTable();
+}
+
+Alignment::Alignment(Sequence s1, Sequence s2, fstream * configFile, int m_a, int m_i, int m_h, int m_g)
+{
+  int index;
+  //if config file supplied, get necessary data from files
+  if(configFile)
+  {
+    mConfigReader = ConfigFileReader(configFile);
+    mConfigReader.getConfigParameters(mMatch, mMismatch, mH, mG);
+  }
+  else {
+    //get necessary data from parameters
+    mM = s1.nucleotideSequence.length();
+    mN = s2.nucleotideSequence.length();
+    mMismatch = m_i;
+    mH = m_h;
+    mG = m_g;
+  }
+
+  aData = {0, 0, 0, 0};
 
   //dynamic programming table includes rows 1-M and columns 1-N with special row and clolumn 0 for base cases.
   dynamicTable = new ScoreCell * [mM + 1];
@@ -56,6 +86,11 @@ void Alignment::doGlobalAlignment()
   //******************* End retrace ****************************************************
 
 }
+
+
+
+
+
 
 void Alignment::doLocalAlignment()
 {
@@ -107,12 +142,16 @@ void Alignment::doLocalAlignment()
   //start from the cell with the highest recorded score
   i = highestScoreRow;
   j = highestScoreCol;
+  //set the end index of best hit to the character after the column of the optimal score (j1 is exclusive)
+  aData.betsHit_j1 = j + 1;
   cellMax = (int)fmax(fmax(dynamicTable[i][j].scoreS, dynamicTable[i][j].scoreD), dynamicTable[i][j].scoreI);
   while(cellMax > 0)
   {
     retraceCell(i, j);
     cellMax = (int)fmax(fmax(dynamicTable[i][j].scoreS, dynamicTable[i][j].scoreD), dynamicTable[i][j].scoreI);
   }
+  //set the start index of the best hit to the index of the end of the retrace
+  aData.bestHit_j0 = j;
 
 }
 
@@ -288,6 +327,17 @@ void Alignment::printReport()
   }
 }
 
+//get the data struct to return
+AlignmentData Alignment::getData() 
+{
+  int total = matchCount + mismatchCount + gCount;
+  //Percent Identity: number of matches / alignment length
+  aData.percentIdentity = matchCount * 100 / total;
+  //Length Coverage: alignment length / length of G[j-l...j+l]
+  aData.lengthCoverage = total * 100 / s2.nucleotideSequence.length();
+  //start and end best hit index already set, ready to return.
+  return aData;
+}
 
 
 void Alignment::computeScoreS(const int & i, const int & j)
