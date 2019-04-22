@@ -22,7 +22,7 @@ Alignment::Alignment(fstream * fastaFile, fstream * configFile)
   prepareTable();
 }
 
-Alignment::Alignment(Sequence & s1, Sequence & s2, fstream * configFile, int m_a, int m_i, int m_h, int m_g)
+Alignment::Alignment(Sequence & seq1, Sequence & seq2, fstream * configFile, int m_a, int m_i, int m_h, int m_g)
 {
   int index;
   //if config file supplied, get necessary data from files
@@ -33,12 +33,14 @@ Alignment::Alignment(Sequence & s1, Sequence & s2, fstream * configFile, int m_a
   }
   else {
     //get necessary data from parameters
-    mM = s1.nucleotideSequence.length();
-    mN = s2.nucleotideSequence.length();
     mMismatch = m_i;
     mH = m_h;
     mG = m_g;
   }
+  mM = seq1.nucleotideSequence.length();
+  mN = seq2.nucleotideSequence.length();
+  s1 = seq1;
+  s2 = seq2;
 
   aData = {0, 0, 0, 0};
 
@@ -104,7 +106,7 @@ void Alignment::doLocalAlignment()
   }
   tableReady = false;
 
-  highestScore = -1 * INFINITY;
+  highestScore = std::numeric_limits<int>::min();
   //************************ Start Forward Computation *************************************
 
   for(i = 1; i <= mM; i++)
@@ -375,15 +377,15 @@ void Alignment::computeScoreD(const int & i, const int & j)
   prevD = dynamicTable[i-1][j].scoreD;
   prevI = dynamicTable[i-1][j].scoreI;
 
-  if(prevS + mH + mG < prevS)
+  if(prevS != std::numeric_limits<int>::min())
   {
     prevS += mH + mG;
   }
-  if(prevD + mG < prevD)
+  if(prevD != std::numeric_limits<int>::min())
   {
     prevD += mG;
   }
-  if(prevI + mH + mG < prevI)
+  if(prevI != std::numeric_limits<int>::min())
   {
     prevI += mH + mG;
   }
@@ -408,15 +410,15 @@ void Alignment::computeScoreI(const int & i, const int & j)
   prevD = dynamicTable[i][j-1].scoreD;
   prevI = dynamicTable[i][j-1].scoreI;
 
-  if(prevS + mH + mG < prevS)
+  if(prevS != std::numeric_limits<int>::min())
   {
     prevS += mH + mG;
   }
-  if(prevD + mH + mG < prevD)
+  if(prevD != std::numeric_limits<int>::min())
   {
     prevD += mH + mG;
   }
-  if(prevI + mG < prevI)
+  if(prevI != std::numeric_limits<int>::min())
   {
     prevI += mG;
   }
@@ -511,12 +513,12 @@ void Alignment::prepareTable()
   for(index = 1; index <= mM; index++)
   {
     dynamicTable[index][0].scoreD = mG * index + mH;
-    dynamicTable[index][0].scoreS = dynamicTable[index][0].scoreI = -1 * INFINITY;
+    dynamicTable[index][0].scoreS = dynamicTable[index][0].scoreI = std::numeric_limits<int>::min();
   }
   for(index = 1; index <= mN; index++)
   {
     dynamicTable[0][index].scoreI = mG * index + mH;
-    dynamicTable[0][index].scoreS = dynamicTable[0][index].scoreD = -1 * INFINITY;
+    dynamicTable[0][index].scoreS = dynamicTable[0][index].scoreD = std::numeric_limits<int>::min();
   }
   tableReady = true;
 }

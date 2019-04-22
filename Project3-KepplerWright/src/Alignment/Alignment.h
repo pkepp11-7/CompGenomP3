@@ -5,6 +5,7 @@
 #include "../FileReader/configfilereader.h"
 #include <iostream>
 #include <cmath>
+#include <limits>
 
 using std::cin;
 using std::cout;
