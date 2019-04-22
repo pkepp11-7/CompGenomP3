@@ -53,6 +53,18 @@ Alignment::Alignment(Sequence & seq1, Sequence & seq2, fstream * configFile, int
   prepareTable();
 }
 
+//need to define a destructor to delete the dynamic programming table
+Alignment::~Alignment()
+{
+  int i;
+  for(i = 0; i <= mM; i++)
+  {
+    delete[] dynamicTable[i];
+  }
+  delete[] dynamicTable;
+
+}
+
 void Alignment::doGlobalAlignment()
 {
   int i, j, highestScore;
