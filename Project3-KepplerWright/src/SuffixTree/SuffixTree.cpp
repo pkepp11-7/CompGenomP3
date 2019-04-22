@@ -344,3 +344,107 @@ int* SuffixTree::getSuffixTreeLeafArray()
 {
   return LeafArray;
 }
+
+SuffixTreeNode* SuffixTree::findLocationPrivate(int &readIndex, const string *read)
+{
+//modify later to use a global x
+  int x = 0;
+  int setCurrentToSL = 0;
+  
+  SuffixTreeNode *current = root;
+  SuffixTreeNode *child = nullptr;
+  SuffixTreeNode *deepest = new SuffixTreeNode();
+
+  while(true)
+  {
+    child = current->getChild((*read)[readIndex], fullString);
+    //base case we keep progressing
+    //nodes scope
+    if(child != nullptr)
+    {
+      Label childLabel = child->getLabel();
+      int labelIndex = 0;
+      int comparison = 0;
+
+      while(labelIndex < (childLabel.endIndex - childLabel.startIndex) &&
+       readIndex < read->size())
+      {
+        comparison 
+          = Alphabet::compare((*read)[readIndex], 
+                              (*fullString)[childLabel.startIndex + labelIndex]);
+
+        if(comparison != 0)
+        {
+          //path no longer matches case B in instructions
+          readIndex -= labelIndex;
+
+          if(child->getDepth() >= x && deepest->getDepth() < child->getDepth())
+          {
+            //set as deepest
+            deepest = child;
+            setCurrentToSL = 1;
+            current = child;
+            break;
+          }
+        }
+
+        //matched keep walking
+        readIndex++;
+        labelIndex++;
+      }
+      if(readIndex >= read->size())
+      {
+        if(child->getDepth() >= x && deepest->getDepth() < child->getDepth())
+        {
+          //set as deepest
+          deepest = child;
+        }
+        return deepest;
+      }
+    }
+    else
+    {
+      //case a in instructions
+      if(current->getDepth() >= x && deepest->getDepth() < current->getDepth())
+      {
+        //set as deepest
+        deepest = current;
+        setCurrentToSL = 1;
+      }
+    }
+    if(setCurrentToSL == 1)
+    {
+      current = current->getSL();
+      setCurrentToSL = 0;
+    }
+    else
+    {
+      current = child;
+    }
+  }
+}
+
+
+vector<int> SuffixTree::findLocation(int &readIndex, const string *read)
+{
+  readIndex = 0;
+  SuffixTreeNode* deepest = findLocationPrivate(readIndex, read);
+  
+  if(deepest->get_end_leaf_index() == -1)
+  {
+    //could not find a location
+    return vector<int>();
+  }
+  else
+  {
+    //found deepest now need to find indexes in array
+    vector<int> returnVector;
+
+    for(int i = deepest->get_start_leaf_index(); i <= deepest->get_end_leaf_index(); i++)
+    {
+      returnVector.push_back(LeafArray[i]);
+    }
+
+    return returnVector;
+  }
+}

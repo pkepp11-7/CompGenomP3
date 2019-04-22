@@ -44,3 +44,64 @@ TEST_CASE("Test that leaf array was created proerly", "[SuffixTree]")
         REQUIRE(expectedLeafArray[i] == actualLeafArray[i]);
     }
 }
+
+TEST_CASE("Test get location", "[SuffixTree]")
+{
+    vector<int> expected;
+    vector<int> actual;
+    int readIndex = 0;
+    string StInput("acacbacbacc$");
+
+    Alphabet::createAlphabet("abc");
+    STData::init(& StInput, StInput.length());
+
+    SuffixTree st = SuffixTree();
+    st.McCreightInsert(&StInput);
+    st.DFS();
+
+    SECTION("basic findlocation ending at node")
+    {
+        string read = string("bac");
+        expected = {5,8};
+        actual = st.findLocation(readIndex, &read);
+
+        REQUIRE(expected.size() == actual.size());
+        REQUIRE(expected[0] == actual[0]);
+        REQUIRE(expected[1] == actual[1]);
+        REQUIRE(readIndex == 3);
+    }
+    SECTION("ending in the middle of a string")
+    {
+        string read = string("ba");
+        expected = {5,8};
+        actual = st.findLocation(readIndex, &read);
+
+        REQUIRE(expected.size() == actual.size());
+        REQUIRE(expected[0] == actual[0]);
+        REQUIRE(expected[1] == actual[1]);
+        REQUIRE(readIndex == 2);
+    }
+    SECTION("going through multipule nodes ending at a node")
+    {
+        string read = string("acc");
+        expected = {9};
+        actual = st.findLocation(readIndex, &read);
+
+        REQUIRE(expected.size() == actual.size());
+        REQUIRE(expected[0] == actual[0]);
+        REQUIRE(readIndex == 3);
+    }
+    SECTION("going through multipule nodes ending at an edge")
+    {
+        string read = string("acac");
+        expected = {1,3,6,9};
+        actual = st.findLocation(readIndex, &read);
+
+        REQUIRE(expected.size() == actual.size());
+        for(int i = 0; i < expected.size(); i++)
+        {
+            REQUIRE(expected[0] == actual[0]);
+        }
+        REQUIRE(readIndex == 4);
+    }
+}
