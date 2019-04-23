@@ -62,6 +62,7 @@ private:
   void computeScoreD( const int & i, const int & j);
   void computeScoreI(const int & i, const int & j);
   int myLog10(int n);
+  int maxInt(int x, int y);
 
   //helper function for retracing a cell
   void retraceCell(int & i, int & j);

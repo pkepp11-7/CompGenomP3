@@ -158,11 +158,11 @@ void Alignment::doLocalAlignment()
   j = highestScoreCol;
   //set the end index of best hit to the character after the column of the optimal score (j1 is exclusive)
   aData.betsHit_j1 = j + 1;
-  cellMax = (int)fmax(fmax(dynamicTable[i][j].scoreS, dynamicTable[i][j].scoreD), dynamicTable[i][j].scoreI);
+  cellMax = maxInt(maxInt(dynamicTable[i][j].scoreS, dynamicTable[i][j].scoreD), dynamicTable[i][j].scoreI);
   while(cellMax > 0)
   {
     retraceCell(i, j);
-    cellMax = (int)fmax(fmax(dynamicTable[i][j].scoreS, dynamicTable[i][j].scoreD), dynamicTable[i][j].scoreI);
+    cellMax = maxInt(maxInt(dynamicTable[i][j].scoreS, dynamicTable[i][j].scoreD), dynamicTable[i][j].scoreI);
   }
   //set the start index of the best hit to the index of the end of the retrace
   aData.bestHit_j0 = j;
@@ -179,6 +179,16 @@ int Alignment::myLog10(int n)
   }
   return logN;
 }
+
+
+ int Alignment::maxInt(int x, int y)
+ {
+   if (x > y)
+   {
+     return x;
+   }
+   else return y;
+ }
 
 void Alignment::printOutput()
 {
@@ -327,14 +337,14 @@ void Alignment::printReport()
   cout << "Report: \n";
   if(isGlobal)
   {
-    cout << "Global Optimal Score = " << (int)fmax(fmax(dynamicTable[mM][mN].scoreS, dynamicTable[mM][mN].scoreD), dynamicTable[mM][mN].scoreI) << '\n';
+    cout << "Global Optimal Score = " << maxInt(maxInt(dynamicTable[mM][mN].scoreS, dynamicTable[mM][mN].scoreD), dynamicTable[mM][mN].scoreI) << '\n';
     cout << "Number of: matches = " << matchCount << ", mismatches = " << mismatchCount << ", gaps = " << gCount << ", opening gaps = " << hCount << '\n';
     int total = matchCount + mismatchCount + gCount;
     cout << "Identities = " << matchCount << '/' << total << " (" << matchCount * 100 / total << "%), Gaps = " << gCount << '/' << total << " (" << gCount * 100 / total << "%)\n";
   }
   else
   {
-    cout << "Local Optimal Score = " << (int)fmax(fmax(dynamicTable[highestScoreRow][highestScoreCol].scoreS, dynamicTable[highestScoreRow][highestScoreCol].scoreD), dynamicTable[highestScoreRow][highestScoreCol].scoreI) << '\n';
+    cout << "Local Optimal Score = " << maxInt(maxInt(dynamicTable[highestScoreRow][highestScoreCol].scoreS, dynamicTable[highestScoreRow][highestScoreCol].scoreD), dynamicTable[highestScoreRow][highestScoreCol].scoreI) << '\n';
     cout << "Number of: matches = " << matchCount << ", mismatches = " << mismatchCount << ", gaps = " << gCount << ", opening gaps = " << hCount << '\n';
     int total = matchCount + mismatchCount + gCount;
     cout << "Identities = " << matchCount << '/' << total << " (" << matchCount * 100 / total << "%), Gaps = " << gCount << '/' << total << " (" << gCount * 100 / total << "%)\n";
@@ -370,11 +380,11 @@ void Alignment::computeScoreS(const int & i, const int & j)
     addScore = mMismatch;
   }
 
-  newScore = (int)fmax(fmax(prevS, prevD), prevI) + addScore;
+  newScore = maxInt(maxInt(prevS, prevD), prevI) + addScore;
 
   if(!isGlobal)
   {
-    newScore = (int)fmax(newScore, 0);
+    newScore = (int)maxInt(newScore, 0);
   }
 
   dynamicTable[i][j].scoreS = newScore;
@@ -402,11 +412,11 @@ void Alignment::computeScoreD(const int & i, const int & j)
     prevI += mH + mG;
   }
 
-  newScore = (int)fmax(fmax(prevS, prevD), prevI);
+  newScore = maxInt(maxInt(prevS, prevD), prevI);
 
   if(!isGlobal)
   {
-    newScore = (int)fmax(newScore, 0);
+    newScore = maxInt(newScore, 0);
   }
 
   dynamicTable[i][j].scoreD = newScore;
@@ -435,11 +445,11 @@ void Alignment::computeScoreI(const int & i, const int & j)
     prevI += mG;
   }
 
-  newScore = (int)fmax(fmax(prevS, prevD), prevI);
+  newScore = maxInt(maxInt(prevS, prevD), prevI);
 
   if(!isGlobal)
   {
-    newScore = (int)fmax(newScore, 0);
+    newScore = (int)maxInt(newScore, 0);
   }
 
   dynamicTable[i][j].scoreI = newScore;
@@ -455,7 +465,7 @@ void Alignment::retraceCell(int & i, int & j)
   curD = dynamicTable[i][j].scoreD;
   curI = dynamicTable[i][j].scoreI;
 
-  max = (int)fmax(fmax(curS, curD), curI);
+  max = maxInt(maxInt(curS, curD), curI);
   if(max == curS)
   {
     pair.p1 = s1.nucleotideSequence[i - 1];
