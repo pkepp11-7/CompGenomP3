@@ -4,6 +4,9 @@
 
 #include "SuffixTreeNode.h"
 #include "STData.h"
+#include <vector>
+
+using namespace std;
 
 class SuffixTree {
 
@@ -35,6 +38,10 @@ SuffixTreeNode * nodeHop(SuffixTreeNode * start, const Label & beta);
 //private recursive DFS function. Called by public DFS
 void DFS(SuffixTreeNode * currentNode, int &nextIndex);
 
+//internal where we return the suffix tree node locations
+SuffixTreeNode* findLocationPrivate(int &readIndex, const string *read);
+
+
 public:
 
 //********constructors*************
@@ -58,6 +65,12 @@ void DFS();
 
 //get suffix tree array used in tests
 int* getSuffixTreeLeafArray();
+
+//returns a list of indices where the input is located
+//readIndex contains length of the lcs
+//contains a node with the begining and end indicies
+vector<int> findLocation(int &readIndex, const string *read);
+
 
 };
 
