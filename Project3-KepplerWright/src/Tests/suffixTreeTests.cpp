@@ -129,7 +129,7 @@ TEST_CASE("Test get location", "[SuffixTree]")
         {
             REQUIRE(expected[0] == actual[0]);
         }
-        REQUIRE(readIndex == 0);
+        REQUIRE(readIndex == 2);
     }
     SECTION("using a suffix link")
     {
@@ -158,7 +158,7 @@ TEST_CASE("Test get location", "[SuffixTree]")
         REQUIRE(readIndex == 4);
     }
 }
-/*
+
 TEST_CASE("real world example", "[SuffixTree]")
 {
     //doesnt need to be 100 percent acurate just close
@@ -169,7 +169,7 @@ TEST_CASE("real world example", "[SuffixTree]")
     int readIndex = 0;
     fstream reader;
     
-    reader.open("../InputFiles/PeachInputCopy.fasta", fstream::in);
+    reader.open("../InputFiles/PeachInput.fasta", fstream::in);
     FastaFileReader fReader = FastaFileReader(&reader);
 
     string peach = fReader.getNextSequence().nucleotideSequence;
@@ -188,8 +188,8 @@ TEST_CASE("real world example", "[SuffixTree]")
 
     for(int i = 0; i < actual_locations.size(); i++)
     {
-        cout << i << ": " << actual_locations[i];
-        if(21801 - 25 < actual_locations[i] && actual_locations[i] > 21801 + 25)
+        cout << i << ": " << actual_locations[i] << "\n";
+        if(3921681 - 25 < actual_locations[i] && actual_locations[i] < 3921681 + 25)
         {
             closeEnough = 1;
         }
@@ -197,4 +197,4 @@ TEST_CASE("real world example", "[SuffixTree]")
 
     REQUIRE(closeEnough == 1);
     
-}*/
+}
