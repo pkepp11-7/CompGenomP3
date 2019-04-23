@@ -353,6 +353,7 @@ SuffixTreeNode* SuffixTree::findLocationPrivate(int &readIndex, const string *re
   
   SuffixTreeNode *current = root;
   SuffixTreeNode *child = nullptr;
+  SuffixTreeNode *temp = nullptr;
   SuffixTreeNode *deepest = new SuffixTreeNode();
 
   while(true)
@@ -376,16 +377,15 @@ SuffixTreeNode* SuffixTree::findLocationPrivate(int &readIndex, const string *re
         if(comparison != 0)
         {
           //path no longer matches case B in instructions
-          readIndex -= labelIndex;
-
+          
           if(child->getDepth() >= x && deepest->getDepth() < child->getDepth())
           {
             //set as deepest
             deepest = child;
-            setCurrentToSL = 1;
-            current = child;
-            break;
           }
+          readIndex -= labelIndex;
+          setCurrentToSL = 1;
+          break;
         }
 
         //matched keep walking
@@ -399,6 +399,7 @@ SuffixTreeNode* SuffixTree::findLocationPrivate(int &readIndex, const string *re
           //set as deepest
           deepest = child;
         }
+        readIndex -= labelIndex;
         return deepest;
       }
     }
@@ -414,6 +415,11 @@ SuffixTreeNode* SuffixTree::findLocationPrivate(int &readIndex, const string *re
     }
     if(setCurrentToSL == 1)
     {
+      //circle ignore
+      if(current == current->getSL())
+      {
+        return deepest;
+      }
       current = current->getSL();
       setCurrentToSL = 0;
     }

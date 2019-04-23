@@ -99,7 +99,7 @@ SuffixTreeNode * SuffixTreeNode::getRightmostChildPointer()
 SuffixTreeNode * SuffixTreeNode::getChild(char firstLabel, const string * fullString)
 {
   int compare = 0;
-  SuffixTreeNode * indexer = childrenPointer;
+  SuffixTreeNode *indexer = childrenPointer;
   Label indexerLabel;
   if(indexer == nullptr)
   {

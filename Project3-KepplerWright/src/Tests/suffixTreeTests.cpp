@@ -2,6 +2,7 @@
 #include "../SuffixTree/SuffixTree.h"
 #include "../SuffixTree/SuffixTreeNode.h"
 #include "../Alphabet.h"
+#include "../FileReader/fastafilereader.h"
 
 
 void BuildSuffixTree()
@@ -68,7 +69,7 @@ TEST_CASE("Test get location", "[SuffixTree]")
         REQUIRE(expected.size() == actual.size());
         REQUIRE(expected[0] == actual[0]);
         REQUIRE(expected[1] == actual[1]);
-        REQUIRE(readIndex == 3);
+        REQUIRE(readIndex == 0);
     }
     SECTION("ending in the middle of a string")
     {
@@ -79,7 +80,7 @@ TEST_CASE("Test get location", "[SuffixTree]")
         REQUIRE(expected.size() == actual.size());
         REQUIRE(expected[0] == actual[0]);
         REQUIRE(expected[1] == actual[1]);
-        REQUIRE(readIndex == 2);
+        REQUIRE(readIndex == 0);
     }
     SECTION("going through multipule nodes ending at a node")
     {
@@ -89,12 +90,64 @@ TEST_CASE("Test get location", "[SuffixTree]")
 
         REQUIRE(expected.size() == actual.size());
         REQUIRE(expected[0] == actual[0]);
-        REQUIRE(readIndex == 3);
+        REQUIRE(readIndex == 2);
     }
     SECTION("going through multipule nodes ending at an edge")
     {
         string read = string("acac");
-        expected = {1,3,6,9};
+        expected = {1};
+        actual = st.findLocation(readIndex, &read);
+
+        REQUIRE(expected.size() == actual.size());
+        for(int i = 0; i < expected.size(); i++)
+        {
+            REQUIRE(expected[0] == actual[0]);
+        }
+        REQUIRE(readIndex == 2);
+    }
+    SECTION("going through multipule nodes ending at an edge with internal node children")
+    {
+        string read = string("acba");
+        expected = {3,6};
+        actual = st.findLocation(readIndex, &read);
+
+        REQUIRE(expected.size() == actual.size());
+        for(int i = 0; i < expected.size(); i++)
+        {
+            REQUIRE(expected[0] == actual[0]);
+        }
+        REQUIRE(readIndex == 2);
+    }
+    SECTION("mismatch on edge")
+    {
+        string read = string("baa");
+        expected = {5,8};
+        actual = st.findLocation(readIndex, &read);
+
+        REQUIRE(expected.size() == actual.size());
+        for(int i = 0; i < expected.size(); i++)
+        {
+            REQUIRE(expected[0] == actual[0]);
+        }
+        REQUIRE(readIndex == 0);
+    }
+    SECTION("using a suffix link")
+    {
+        string read = string("bacac");
+        expected = {1};
+        actual = st.findLocation(readIndex, &read);
+
+        REQUIRE(expected.size() == actual.size());
+        for(int i = 0; i < expected.size(); i++)
+        {
+            REQUIRE(expected[0] == actual[0]);
+        }
+        REQUIRE(readIndex == 3);
+    }
+    SECTION("Mismatch after a node")
+    {
+        string read = string("cbaca");
+        expected = {4,7};
         actual = st.findLocation(readIndex, &read);
 
         REQUIRE(expected.size() == actual.size());
@@ -105,3 +158,43 @@ TEST_CASE("Test get location", "[SuffixTree]")
         REQUIRE(readIndex == 4);
     }
 }
+/*
+TEST_CASE("real world example", "[SuffixTree]")
+{
+    //doesnt need to be 100 percent acurate just close
+    
+    //>READ_329422_from_Peach_reference.fasta_AT_3921681
+    //AATTTGGTGATTCCAGTGTTAACGGTGAACTGTACCTTTAAAGAATCTCTGAGACCAATGTCTTTTGCCCGATTGATTGTTCCTGCTGCCTATGTGATGAGC
+    string readInput = string("AATTTGGTGATTCCAGTGTTAACGGTGAACTGTACCTTTAAAGAATCTCTGAGACCAATGTCTTTTGCCCGATTGATTGTTCCTGCTGCCTATGTGATGAGC");
+    int readIndex = 0;
+    fstream reader;
+    
+    reader.open("../InputFiles/PeachInputCopy.fasta", fstream::in);
+    FastaFileReader fReader = FastaFileReader(&reader);
+
+    string peach = fReader.getNextSequence().nucleotideSequence;
+    peach.append("$");
+
+    Alphabet::createAlphabet("ACGT");
+    STData::init(& peach, peach.length());
+
+    SuffixTree st = SuffixTree();
+    st.McCreightInsert(&peach);
+    st.DFS();
+
+    vector<int> actual_locations = st.findLocation(readIndex, &readInput);
+
+    int closeEnough = 0;
+
+    for(int i = 0; i < actual_locations.size(); i++)
+    {
+        cout << i << ": " << actual_locations[i];
+        if(21801 - 25 < actual_locations[i] && actual_locations[i] > 21801 + 25)
+        {
+            closeEnough = 1;
+        }
+    }
+
+    REQUIRE(closeEnough == 1);
+    
+}*/
