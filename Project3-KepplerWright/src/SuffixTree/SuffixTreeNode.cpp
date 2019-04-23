@@ -99,31 +99,31 @@ SuffixTreeNode * SuffixTreeNode::getRightmostChildPointer()
 SuffixTreeNode * SuffixTreeNode::getChild(char firstLabel, const string * fullString)
 {
   int compare = 0;
-  SuffixTreeNode * indexer = childrenPointer;
+  SuffixTreeNode *indexer = childrenPointer;
   Label indexerLabel;
-  if(indexer == nullptr)
+  if(indexer != nullptr)
   {
-    return nullptr;
+    while(true)
+    {
+      indexerLabel = indexer->getLabel();
+      //compare = Alphabet::compare(firstLabel, indexer->getLabel()[0]);
+      compare = Alphabet::compare(firstLabel, (*fullString)[indexerLabel.startIndex]);
+      if(compare == 0)
+      {
+        //found child
+        break;
+      }
+      if(indexer->getSibling() == nullptr)
+      {
+        //unable to find child
+        return indexer->getSibling();
+      }
+      //increment search
+      indexer = indexer->getSibling();
+    }
   }
 
-  while(true)
-  {
-    indexerLabel = indexer->getLabel();
-    //compare = Alphabet::compare(firstLabel, indexer->getLabel()[0]);
-    compare = Alphabet::compare(firstLabel, (*fullString)[indexerLabel.startIndex]);
-    if(compare == 0)
-    {
-      //found child
-      return indexer;
-    }
-    if(indexer->getSibling() == nullptr)
-    {
-      //unable to find child
-      return nullptr;
-    }
-    //increment search
-    indexer = indexer->getSibling();
-  }
+  return indexer;
 }
 
 SuffixTreeNode * SuffixTreeNode::getSibling()
