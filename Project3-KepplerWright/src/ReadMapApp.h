@@ -33,7 +33,8 @@ private:
     //Step 3b: FindLoc
     void findLoc();
     //Step 3c: align
-    void align();
+    //takes the length of the read, the index of
+    void align(const vector<unsigned int> & indexList, Sequence * G, Sequence * r_i);
     //Step 4: output
     void output();
 

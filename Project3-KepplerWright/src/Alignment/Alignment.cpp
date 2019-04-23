@@ -348,7 +348,7 @@ AlignmentData Alignment::getData()
   //Percent Identity: number of matches / alignment length
   aData.percentIdentity = matchCount * 100 / total;
   //Length Coverage: alignment length / length of G[j-l...j+l]
-  aData.lengthCoverage = total * 100 / s2.nucleotideSequence.length();
+  aData.lengthCoverage = total * 100 / mN;
   //start and end best hit index already set, ready to return.
   return aData;
 }
