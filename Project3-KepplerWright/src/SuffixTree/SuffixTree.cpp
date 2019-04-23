@@ -359,6 +359,7 @@ SuffixTreeNode* SuffixTree::findLocationPrivate(int &readIndex, const string *re
   while(true)
   {
     child = current->getChild((*read)[readIndex], fullString);
+    
     //base case we keep progressing
     //nodes scope
     if(child != nullptr)
