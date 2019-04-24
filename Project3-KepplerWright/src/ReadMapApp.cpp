@@ -11,7 +11,7 @@ ReadMapApp::ReadMapApp(const string & genomeFileName,const string & readFileName
     rFileName = readFileName;
     aFileName = alphabetFileName;
 
-    outputTime = alignedReads = totalReads = 0;
+    outputTime = alignedReads = totalReads = hitCount = 0;
 
     outputFile.open("MappingResults_" + gFileName + ".txt");
 
@@ -45,7 +45,8 @@ void ReadMapApp::run()
     cout << ", mapRead time: " << mapTime << "ms";
     cout << ", output time: " << outputTime / 1000 << "ms" << std::endl;
     cout << "Total time: " << constructionTime + prepTime + mapTime << "ms" << std::endl;
-    cout << "Alignments per read: " << ((double) alignedReads)/totalReads;
+    cout << "Alignments per read: " << ((double) alignedReads)/totalReads << std::endl;
+    cout << "Hit rate: " << hitCount * 100 / totalReads << "%\n";
 }
 
 //*********************************Private Methods************************************
@@ -159,6 +160,7 @@ void ReadMapApp::output(int bestCoverage, int jStart, int jEnd)
 {
     if(bestCoverage != 0)
     {
+        hitCount++;
         outputFile << currentRead.name << " " << jStart << " " << jEnd << std::endl; 
     }
     else

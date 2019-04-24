@@ -12,6 +12,7 @@ using std::cout;
 using std::string;
 
 typedef struct alignmentData {
+  int max_score;
   unsigned int percentIdentity;
   unsigned int lengthCoverage;
   unsigned int bestHit_j0;
@@ -48,7 +49,7 @@ private:
   }AlignmentPair;
 
 
-  int mM, mN, mMatch, mMismatch,mH, mG, matchCount, mismatchCount, hCount, gCount, highestScore, highestScoreRow, highestScoreCol;
+  int mM, mN, mMatch, mMismatch,mH, mG, matchCount, mismatchCount, hCount, gCount, highestScore, highestScoreRow, highestScoreCol, total;
   ScoreCell ** dynamicTable;
   FastaFileReader mFastaReader;
   ConfigFileReader mConfigReader;

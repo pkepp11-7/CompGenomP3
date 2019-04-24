@@ -9,4 +9,5 @@ g++ -w -o output-build *.cpp FileReader/*.cpp SuffixTree/*.cpp Alignment/*.cpp
 ./output-build $1 $2 $3
 
 #remove the links in src, they are no longer needed
+mv MappingResults_$1.txt ../
 rm $1 $2 $3
