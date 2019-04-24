@@ -1,3 +1,5 @@
+BEFORE RUNNING: Add the necessary input files to the src/InputFiles directory
+
 There are two build scripts that can be used to see the final submission:
 -clean-build.sh
 -pre-build.sh

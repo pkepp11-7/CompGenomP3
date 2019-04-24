@@ -47,7 +47,7 @@ private:
     SuffixTree readTree;
     string gFileName, rFileName, aFileName;
     Sequence currentRead, G;
-    int totalReads, alignedReads, constructionTime, prepTime, mapTime, outputTime;
+    int totalReads, alignedReads, constructionTime, prepTime, mapTime, outputTime, hitCount;
 };
 
 

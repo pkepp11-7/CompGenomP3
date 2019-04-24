@@ -7,4 +7,5 @@ cd src
 #run the pre-built executable with the necessary parameters
 ./output-build $1 $2 $3
 #remove the links in src, they are no longer needed
+mv MappingResults_$1.txt ../
 rm $1 $2 $3

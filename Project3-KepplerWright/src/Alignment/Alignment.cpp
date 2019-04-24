@@ -33,6 +33,7 @@ Alignment::Alignment(Sequence & seq1, Sequence & seq2, fstream * configFile, int
   }
   else {
     //get necessary data from parameters
+    mMatch = m_a;
     mMismatch = m_i;
     mH = m_h;
     mG = m_g;
@@ -68,6 +69,7 @@ Alignment::~Alignment()
 void Alignment::doGlobalAlignment()
 {
   int i, j, highestScore;
+  total = 0;
   matchCount = mismatchCount = hCount = gCount = 0;
   isGlobal = true;
 
@@ -94,6 +96,7 @@ void Alignment::doGlobalAlignment()
   j = mN;
   while(i > 0 || j > 0)
   {
+    total++;
     retraceCell(i, j);
   }
 
@@ -112,13 +115,15 @@ void Alignment::doLocalAlignment()
   matchCount = mismatchCount = hCount = gCount = 0;
   isGlobal = false;
 
+  total = 0;
+
   if(!tableReady)
   {
     prepareTable();
   }
   tableReady = false;
 
-  highestScore = std::numeric_limits<int>::min();
+  highestScore = 0;
   //************************ Start Forward Computation *************************************
 
   for(i = 1; i <= mM; i++)
@@ -156,16 +161,18 @@ void Alignment::doLocalAlignment()
   //start from the cell with the highest recorded score
   i = highestScoreRow;
   j = highestScoreCol;
+  aData.max_score = highestScore;
   //set the end index of best hit to the character after the column of the optimal score (j1 is exclusive)
-  aData.betsHit_j1 = j + 1;
+  aData.betsHit_j1 = j;
   cellMax = maxInt(maxInt(dynamicTable[i][j].scoreS, dynamicTable[i][j].scoreD), dynamicTable[i][j].scoreI);
   while(cellMax > 0)
   {
     retraceCell(i, j);
+    total++;
     cellMax = maxInt(maxInt(dynamicTable[i][j].scoreS, dynamicTable[i][j].scoreD), dynamicTable[i][j].scoreI);
   }
   //set the start index of the best hit to the index of the end of the retrace
-  aData.bestHit_j0 = j;
+  aData.bestHit_j0 = j - 1;
 
 }
 
@@ -354,11 +361,10 @@ void Alignment::printReport()
 //get the data struct to return
 AlignmentData Alignment::getData() 
 {
-  int total = matchCount + mismatchCount + gCount;
   //Percent Identity: number of matches / alignment length
   aData.percentIdentity = matchCount * 100 / total;
-  //Length Coverage: alignment length / length of G[j-l...j+l]
-  aData.lengthCoverage = total * 100 / mN;
+  //Length Coverage: alignment length / l
+  aData.lengthCoverage = total * 100 / mM;
   //start and end best hit index already set, ready to return.
   return aData;
 }
@@ -380,11 +386,30 @@ void Alignment::computeScoreS(const int & i, const int & j)
     addScore = mMismatch;
   }
 
-  newScore = maxInt(maxInt(prevS, prevD), prevI) + addScore;
+  newScore = maxInt(maxInt(prevS, prevD), prevI);
+  if(!isGlobal)
+  {
+    if (newScore + addScore > 0)
+    {
+      newScore += addScore;
+    }
+    else 
+    {
+      newScore = 0;
+    }
+  }
+  else
+  {
+    if (newScore != std::numeric_limits<int>::min())
+    {
+      newScore += addScore;
+    }
+  }
+  
 
   if(!isGlobal)
   {
-    newScore = (int)maxInt(newScore, 0);
+    newScore = maxInt(newScore, 0);
   }
 
   dynamicTable[i][j].scoreS = newScore;
@@ -399,17 +424,46 @@ void Alignment::computeScoreD(const int & i, const int & j)
   prevD = dynamicTable[i-1][j].scoreD;
   prevI = dynamicTable[i-1][j].scoreI;
 
-  if(prevS != std::numeric_limits<int>::min())
-  {
-    prevS += mH + mG;
+  if(!isGlobal) {
+
+    if(prevS > 0)
+    {
+      prevS += mH + mG;
+    }
+    else
+    {
+      prevS = 0;
+    }
+    if(prevD > 0)
+    {
+      prevD += mG;
+    }
+    else 
+    {
+      prevD = 0;
+    }
+    if(prevI  > 0 )
+    {
+      prevI += mH + mG;
+    }
+    else
+    {
+      prevI = 0;
+    }
   }
-  if(prevD != std::numeric_limits<int>::min())
-  {
-    prevD += mG;
-  }
-  if(prevI != std::numeric_limits<int>::min())
-  {
-    prevI += mH + mG;
+  else {
+    if(prevS != std::numeric_limits<int>::min())
+    {
+      prevS += mH + mG;
+    }
+    if(prevD != std::numeric_limits<int>::min())
+    {
+      prevD += mG;
+    }
+    if(prevI != std::numeric_limits<int>::min())
+    {
+      prevI += mH + mG;
+    }
   }
 
   newScore = maxInt(maxInt(prevS, prevD), prevI);
@@ -431,20 +485,48 @@ void Alignment::computeScoreI(const int & i, const int & j)
   prevS = dynamicTable[i][j-1].scoreS;
   prevD = dynamicTable[i][j-1].scoreD;
   prevI = dynamicTable[i][j-1].scoreI;
-
-  if(prevS != std::numeric_limits<int>::min())
+  if(!isGlobal) 
   {
-    prevS += mH + mG;
+    if(prevS > 0)
+    {
+      prevS += mH + mG;
+    }
+    else
+    {
+      prevS = 0;
+    }
+    if(prevD > 0)
+    {
+      prevD += mH + mG;
+    }
+    else
+    {
+      prevD = 0;
+    }
+    if(prevI > 0)
+    {
+      prevI += mG;
+    }
+    else
+    {
+      prevI = 0;
+    }
   }
-  if(prevD != std::numeric_limits<int>::min())
+  else 
   {
-    prevD += mH + mG;
+    if(prevS != std::numeric_limits<int>::min())
+    {
+      prevS += mH + mG;
+    }
+    if(prevI != std::numeric_limits<int>::min())
+    {
+      prevI += mG;
+    }
+    if(prevD != std::numeric_limits<int>::min())
+    {
+      prevD += mH + mG;
+    }
   }
-  if(prevI != std::numeric_limits<int>::min())
-  {
-    prevI += mG;
-  }
-
   newScore = maxInt(maxInt(prevS, prevD), prevI);
 
   if(!isGlobal)
@@ -532,15 +614,29 @@ void Alignment::prepareTable()
 {
   int index;
   dynamicTable[0][0].scoreS = dynamicTable[0][0].scoreD = dynamicTable[0][0].scoreI = 0;
-  for(index = 1; index <= mM; index++)
+  if(isGlobal)
   {
-    dynamicTable[index][0].scoreD = mG * index + mH;
-    dynamicTable[index][0].scoreS = dynamicTable[index][0].scoreI = std::numeric_limits<int>::min();
+    for(index = 1; index <= mM; index++)
+    {
+      dynamicTable[index][0].scoreD = mG * index + mH;
+      dynamicTable[index][0].scoreS = dynamicTable[index][0].scoreI = std::numeric_limits<int>::min();
+    }
+    for(index = 1; index <= mN; index++)
+    {
+      dynamicTable[0][index].scoreI = mG * index + mH;
+      dynamicTable[0][index].scoreS = dynamicTable[0][index].scoreD = std::numeric_limits<int>::min();
+    }
   }
-  for(index = 1; index <= mN; index++)
+  else 
   {
-    dynamicTable[0][index].scoreI = mG * index + mH;
-    dynamicTable[0][index].scoreS = dynamicTable[0][index].scoreD = std::numeric_limits<int>::min();
+    for(index = 1; index <= mM; index++)
+    {
+      dynamicTable[index][0].scoreD = dynamicTable[index][0].scoreS = dynamicTable[index][0].scoreI= 0;
+    }
+    for(index = 1; index <= mN; index++)
+    {
+      dynamicTable[0][index].scoreS = dynamicTable[0][index].scoreD = dynamicTable[0][index].scoreI = 0;;
+    }
   }
   tableReady = true;
 }

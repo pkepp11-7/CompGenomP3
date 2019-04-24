@@ -1,5 +1,6 @@
 Genome Length: 5362496
 Number of reads: 500000
-Construction time: 27062ms, Prep time: 1227ms, mapRead time: 937557ms, output time: 215ms
-Total time: 965846ms
+Construction time: 26312ms, Prep time: 1298ms, mapRead time: 963170ms, output time: 2371ms
+Total time: 990780ms
 Alignments per read: 1.07625
+Hit rate: 77%
