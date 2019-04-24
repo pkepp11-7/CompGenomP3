@@ -6,17 +6,21 @@
 #include "SuffixTree/SuffixTree.h" //includes suffixTreeNode, STData, strings, time
 #include "FileReader/alphabetfilereader.h"
 
+using std::ofstream;
+
 //application class to organize the execution of Project 3
 class ReadMapApp {
 
 public:
     //**********************************Constructors*************************************
     //TODO: Create constructor that takes necessary parameters from main
-    ReadMapApp();
+    ReadMapApp(const string & genomeFileName, const string & readFileName, const string & alphabetFileName);
 
     //*********************************Public Methods************************************
     //execution function, calls all private step functions in algorithm
     void run();
+
+
 
 private:
     //*********************************Private Methods************************************
@@ -31,14 +35,19 @@ private:
     //Step 3:Map Reads
     void mapReads();
     //Step 3b: FindLoc
-    void findLoc();
+    int findLoc();
     //Step 3c: align
     //takes the length of the read, the index of
-    void align(const vector<unsigned int> & indexList, Sequence * G, Sequence * r_i);
+    void align(const vector<int> & indexList);
     //Step 4: output
-    void output();
+    void output(int bestCoverage, int start, int end);
 
     //*********************************Private Data************************************
+    ofstream outputFile;
+    SuffixTree readTree;
+    string gFileName, rFileName, aFileName;
+    Sequence currentRead, G;
+    int totalReads, alignedReads, constructionTime, prepTime, mapTime, outputTime;
 };
 
 

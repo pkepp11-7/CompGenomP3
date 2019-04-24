@@ -19,7 +19,7 @@ private:
   static unsigned int internalNodes, leafNodes, len, position;
   static char * bwt;
   static string * inputStr;
-  static struct timeval * startTime, * endTime;
+  static struct timeval * startTime, * endTime, *startTime2, * endTime2;
   static SuffixTreeNode * deepestInternal;
 
 //******private methods***********
@@ -40,7 +40,9 @@ public:
   //give the index for adding to the BWT. Conversion from index to character handled by  STData
   static void pushBwt(unsigned int index);
   static void startTimer();
+  static void startTimer2();
   static void stopTimer();
+  static void stopTimer2();
 
   //initialize the static class
   static void init(string * str, const unsigned int & length);
@@ -54,6 +56,9 @@ public:
 
   //print time elapsed between startTimer and stopTimer calls
   static void printElapsedTime();
+  static void printElapsedTime2();
+  static int getElapsedTime();
+  static int getElapsedTime2();
 
   //print the longest repeating substring, based on the deepest internal node
   static void printLongestRepeat();

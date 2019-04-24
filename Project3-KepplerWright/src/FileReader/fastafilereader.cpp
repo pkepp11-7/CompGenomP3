@@ -4,6 +4,7 @@
 FastaFileReader::FastaFileReader(fstream * infile) : FileReader(infile)
 {
   eof = false;
+  nextLine = "";
   /*
   string currentName = "", currentSequence = "";
   sequences = vector<Sequence>();
@@ -101,13 +102,22 @@ Sequence FastaFileReader::getNextSequence()
   int index;
   bool foundSequence = false;
   string currentName ="", currentSequence = "";
-  string currentLine = readLine();
+  string currentLine;
   Sequence sequence = {"", ""};
+
+  if(nextLine != "")
+  {
+    currentLine = nextLine;
+  }
+  else 
+  {
+    currentLine = readLine();
+  }
 
   while(!eof && !foundSequence && currentLine.compare("end") != 0)
   {
     //header, contains a name
-    if(currentLine.length() > 0 && currentLine[0] == '>')
+    if(currentLine.length() > 0 && currentLine[0] == '>' && currentSequence == "")
     {
         index = 1;
         //check for the first whitespace character (space, tab, or null character)
@@ -116,9 +126,10 @@ Sequence FastaFileReader::getNextSequence()
           index++;
         }
         currentName = currentLine.substr(1, index);
+        currentLine = readLine();
     }
 
-    else if(currentLine.length() > 0)
+    else if(currentLine.length() > 0 && currentLine[0] != '>')
     {
       //convert all characters to uppercase
       for(index = 0; index < currentLine.length(); index++)
@@ -129,19 +140,19 @@ Sequence FastaFileReader::getNextSequence()
         }
       }
       currentSequence += currentLine;
+      currentLine = readLine();
     }
     //empty line, add existing sequence to end of list if it exists
     else
     {
+      nextLine = currentLine;
       if(currentName.length() > 0)
       {
-
         sequence.name = currentName;
         sequence.nucleotideSequence = currentSequence;
         foundSequence = true;
       }
     }
-    currentLine = readLine();
   }
   if(currentLine.compare("end") == 0)
   {

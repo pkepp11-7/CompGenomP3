@@ -23,6 +23,7 @@ public:
 private:
   //vector<Sequence> sequences;
   bool eof;
+  string nextLine;
 };
 
 #endif
