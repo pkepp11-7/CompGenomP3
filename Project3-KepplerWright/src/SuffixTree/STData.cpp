@@ -5,7 +5,7 @@
 unsigned int STData::internalNodes = 0, STData::leafNodes = 0, STData::len = 0, STData::position = 0;
 char * STData::bwt = nullptr;
 string * STData::inputStr = nullptr;
-struct timeval * STData::startTime = nullptr, * STData::endTime = nullptr;
+struct timeval * STData::startTime = nullptr, * STData::endTime = nullptr, * STData::startTime2 = nullptr, * STData::endTime2 = nullptr;
 SuffixTreeNode * STData::deepestInternal = nullptr;
 
 
@@ -113,6 +113,25 @@ void STData::stopTimer()
   gettimeofday(endTime, NULL);
 }
 
+
+void STData::startTimer2()
+{
+  if(startTime2 == nullptr)
+  {
+    startTime2 = new struct timeval();
+  }
+  gettimeofday(startTime2, NULL);
+}
+
+void STData::stopTimer2()
+{
+  if(endTime2 == nullptr)
+  {
+    endTime2 = new struct timeval();
+  }
+  gettimeofday(endTime2, NULL);
+}
+
 //print the bwt 1 character to a line
 void STData::printBwt()
 {
@@ -139,6 +158,31 @@ void STData::printElapsedTime()
   unsigned int elapsedTimeMs = (endTime->tv_sec - startTime->tv_sec) * 1000 + (endTime->tv_usec - startTime->tv_usec) / 1000;
   cout << "ST construction time: " << elapsedTimeMs << "ms\n";
 
+}
+
+
+void STData::printElapsedTime2()
+{
+  //elapsed time in milliseconds
+  assert(startTime2 != nullptr && endTime2 != nullptr);
+  unsigned int elapsedTimeMs = (endTime2->tv_sec - startTime2->tv_sec) * 1000 + (endTime2->tv_usec - startTime2->tv_usec) / 1000;
+  cout << "ST construction time: " << elapsedTimeMs << "ms\n";
+
+}
+
+int STData::getElapsedTime()
+{
+   //elapsed time in milliseconds
+  assert(startTime != nullptr && endTime != nullptr);
+  int elapsedTimeMs = (endTime->tv_sec - startTime->tv_sec) * 1000 + (endTime->tv_usec - startTime->tv_usec) / 1000; 
+  return elapsedTimeMs;
+}
+
+int STData::getElapsedTime2()
+{
+  assert(startTime2 != nullptr && endTime2 != nullptr);
+  int elapsedTimeMs = (endTime2->tv_sec - startTime2->tv_sec) * 1000000 + (endTime2->tv_usec - startTime2->tv_usec);
+  return elapsedTimeMs;
 }
 
 //print the longest repeating substring, based on the deepest internal node

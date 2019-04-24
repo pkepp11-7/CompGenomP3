@@ -1,0 +1,5 @@
+Genome Length: 5362496
+Number of reads: 500000
+Construction time: 27062ms, Prep time: 1227ms, mapRead time: 937557ms, output time: 215ms
+Total time: 965846ms
+Alignments per read: 1.07625

@@ -217,7 +217,7 @@ SuffixTreeNode * SuffixTree::nodeHop(SuffixTreeNode * start, const Label & beta)
 void SuffixTree::DFS(SuffixTreeNode * currentNode, int &nextIndex)
 {
   //need to replace this with a global x
-  int x = 0;
+  int x = 25;
 
   if(currentNode != nullptr)
   {
@@ -348,7 +348,7 @@ int* SuffixTree::getSuffixTreeLeafArray()
 SuffixTreeNode* SuffixTree::findLocationPrivate(int &readIndex, const string *read)
 {
 //modify later to use a global x
-  int x = 0;
+  int x = 25;
   int setCurrentToSL = 0;
   
   SuffixTreeNode *current = root;
